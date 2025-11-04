@@ -1,1 +1,1 @@
-#empty file to mark 'app' as a package.
+# Empty file to mark `app.repos` as a package.
