@@ -1,7 +1,7 @@
 # study-buddy
 Study Buddy Social Media Platform
 
-# Left off video at 48:30
+# Left off video at 1:06:00
 
 Run Frontend Client:
     - cd src/client

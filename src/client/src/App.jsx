@@ -9,6 +9,7 @@ import Discover from './pages/Discover'
 import Profile from './pages/Profile'
 import CreatePost from './pages/CreatePost'
 import { useUser } from '@clerk/clerk-react'
+import Layout from './pages/Layout'
 
 const App = () => {
   const { user } = useUser()
