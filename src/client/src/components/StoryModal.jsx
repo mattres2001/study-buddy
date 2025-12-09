@@ -21,7 +21,7 @@ const StoryModal = ({setShowModal, fetchStories}) => {
     }
 
     const handleCreateStory = async () => {
-
+        
     }
 
     return (
