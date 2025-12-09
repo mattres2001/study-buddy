@@ -14,7 +14,7 @@ async def register(payload: UserCreate, db: AsyncIOMotorDatabase = Depends(get_d
     existing = await get_user_by_email(db, payload.email)
     if existing:
         raise HTTPException(400, "Email already registered")
-        user_db = UserDB(
+    user_db = UserDB(
         email=payload.email,
         name=payload.name,
         password_hash=hash_password(payload.password),
