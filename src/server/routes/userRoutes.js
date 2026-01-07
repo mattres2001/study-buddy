@@ -4,7 +4,10 @@ import {
     updateUserData, 
     discoverUsers, 
     followUser, 
-    unfollowUser 
+    unfollowUser,
+    sendConnectionRequest,
+    acceptConnectionRequest,
+    getUserConnections 
 } from '../controllers/userController.js';
 import { protect } from '../middleware/auth.js';
 import { upload } from '../configs/multer.js';
@@ -19,5 +22,8 @@ userRouter.post('/update', upload.fields([
 userRouter.post('/discover', protect, discoverUsers);
 userRouter.post('/follow', protect, followUser);
 userRouter.post('/unfollow', protect, unfollowUser);
+userRouter.post('/connect', protect, sendConnectionRequest);
+userRouter.post('/accept', protect, acceptConnectionRequest);
+userRouter.get('/connections', protect, getUserConnections);
 
 export default userRouter
