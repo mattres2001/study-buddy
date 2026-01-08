@@ -2,6 +2,7 @@ import imagekit from '../configs/imagekit.js'
 import User from '../models/User.js'
 import fs from 'fs'
 import Connection from '../models/Connection.js'
+import Post from '../models/Post.js'
 
 // Get user Data using userId
 export const getUserData = async (req, res) => {
@@ -20,10 +21,7 @@ export const getUserData = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
-        res.json({
-            success: false,
-            message: error.message
-        });
+        res.json({ success: false, message: error.message });
     }
 }
 
@@ -60,7 +58,6 @@ export const updateUserData = async (req, res) => {
             const response = await imagekit.upload({
                 file: buffer,
                 fileName: profile.originalname,
-
             });
 
             const url = imagekit.url({
@@ -79,7 +76,6 @@ export const updateUserData = async (req, res) => {
             const response = await imagekit.upload({
                 file: buffer,
                 fileName: cover.originalname,
-
             });
 
             const url = imagekit.url({
@@ -102,10 +98,7 @@ export const updateUserData = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
-        res.json({
-            success: false,
-            message: error.message
-        });
+        res.json({ success: false, message: error.message });
     }
 }
 
@@ -127,16 +120,10 @@ export const discoverUsers = async (req, res) => {
         );
         const filteredUsers = allusers.filter(user => user._id !== userId);
         
-        res.json({
-            success: true,
-            users: filteredUsers
-        });
+        res.json({ success: true, users: filteredUsers });
     } catch (error) {
         console.log(error);
-        res.json({
-            success: false,
-            message: error.message
-        });
+        res.json({ success: false, message: error.message });
     }
 }
 
@@ -149,10 +136,7 @@ export const followUser = async (req, res) => {
         const user = await User.findById(userId);
 
         if (user.following.includes(id)) {
-            return res.json({
-                success: false,
-                message: 'You are already following this user'
-            });
+            return res.json({ success: false, message: 'You are already following this user' });
         }
 
         user.following.push(id);
@@ -162,16 +146,10 @@ export const followUser = async (req, res) => {
         toUser.followers.push(userId);
         await toUser.save();
 
-        res.json({
-            success: true,
-            message: 'Now you are following this user'
-        })
+        res.json({ success: true, message: 'Now you are following this user' })
     } catch (error) {
         console.log(error);
-        res.json({
-            success: false,
-            message: error.message
-        });
+        res.json({ success: false, message: error.message });
     }
 }
 
@@ -190,16 +168,10 @@ export const unfollowUser = async (req, res) => {
         toUser.following = toUser.following.filter(user => user !== userId);
         await toUser.save();
 
-        res.json({
-            success: true,
-            message: 'You are no longer following this user'
-        })
+        res.json({ success: true, message: 'You are no longer following this user' })
     } catch (error) {
         console.log(error);
-        res.json({
-            success: false,
-            message: error.message
-        });
+        res.json({ success: false, message: error.message });
     }
 }
 
@@ -216,10 +188,7 @@ export const sendConnectionRequest = async (req, res) => {
             created_at: { $gt: last24Hours }
         });
         if (connectionRequests.length >= 20) {
-            return res.json({
-                success: false,
-                message: 'You have sent more than 20 connection requests in the last 24 hours'
-            });
+            return res.json({ success: false, message: 'You have sent more than 20 connection requests in the last 24 hours' });
         }
 
         // Check if users are already connected
@@ -235,27 +204,15 @@ export const sendConnectionRequest = async (req, res) => {
                 from_user_id: userId,
                 to_user_id
             });
-            return res.json({
-                success: true,
-                message: 'Connection request sent successfully'
-            });
+            return res.json({ success: true, message: 'Connection request sent successfully' });
         } else if (connection && connection.status === 'accepted') {
-            return res.json({
-                success: false,
-                message: 'You are already connected with this user'
-            });
+            return res.json({ success: false, message: 'You are already connected with this user' });
         }
 
-        return res.json({
-            success: false,
-            message: 'Connection request pending'
-        });
+        return res.json({ success: false, message: 'Connection request pending' });
     } catch (error) {
         console.log(error);
-        res.json({
-            success: false,
-            message: error.message
-        });
+        res.json({ success: false, message: error.message });
     }
 }
 
@@ -284,10 +241,7 @@ export const getUserConnections = async (req, res) => {
         
     } catch (error) {
         console.log(error);
-        res.json({
-            success: false,
-            message: error.message
-        });
+        res.json({ success: false, message: error.message });
     }
 }
 
@@ -303,10 +257,7 @@ export const acceptConnectionRequest = async (req, res) => {
         });
 
         if (!connection) {
-            return res.json({
-                success: false,
-                message: 'Connection not found'
-            });
+            return res.json({ success: false, message: 'Connection not found' });
         }
 
         const user = await User.findById(userId);
@@ -320,16 +271,28 @@ export const acceptConnectionRequest = async (req, res) => {
         connection.status = 'accepted';
         await connection.save();
 
-        res.json({
-            success: true,
-            message: 'Connection accepted successfully'
-        });
+        res.json({ success: true, message: 'Connection accepted successfully' });
 
     } catch (error) {
         console.log(error);
-        res.json({
-            success: false,
-            message: error.message
-        });
+        res.json({ success: false, message: error.message });
+    }
+}
+
+// Get User Profiles
+export const getUserProfiles = async (req, res) => {
+    try {
+        const { profileId } = req.body;
+        const profile = await User.findById(profileId);
+
+        if (!profile) {
+            return res.json({ success: false, message: 'Profile not found' });
+        }
+
+        const posts = await Post.find({ user: profileId }).populate('user');
+        res.json({ success: true, profile, posts });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
     }
 }
