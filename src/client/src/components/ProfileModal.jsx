@@ -1,10 +1,17 @@
 import React, { useState } from 'react'
 import { dummyUserData } from '../assets/assets'
 import { Pencil } from 'lucide-react'
+import { useDispatch, useSelector } from 'react-redux'
+import { updateUser } from '../features/user/userSlice'
+import toast from 'react-hot-toast'
+import { useAuth } from '@clerk/clerk-react'
 
 const ProfileModal = ({setShowEdit}) => {
 
-    const user = dummyUserData
+    const dispatch = useDispatch()
+    const { getToken } = useAuth()
+
+    const user = useSelector((state) => state.user.value)
     const [ editForm, setEditForm ] = useState({
         username: user.username,
         bio: user.bio,
@@ -16,6 +23,38 @@ const ProfileModal = ({setShowEdit}) => {
 
     const handleSaveProfile = async (e) => {
         e.preventDefault()
+        try {
+            const userData = new FormData()
+            const { full_name, username, bio, location, profile_picture, cover_photo } = editForm
+            userData.append('username', username)
+            userData.append('bio', bio)
+            userData.append('location', location)
+            userData.append('full_name', full_name)
+            profile_picture && userData.append('profile', profile_picture)
+            cover_photo && userData.append('cover', cover_photo)
+
+            const token = await getToken()
+            dispatch(updateUser({ userData, token }))
+
+            setShowEdit(false)
+        } catch (error) {
+            toast.error(error.message)
+        }
+
+
+        // const userData = new FormData()
+        // const { full_name, username, bio, location, profile_picture, cover_photo } = editForm
+        // userData.append('username', username)
+        // userData.append('bio', bio)
+        // userData.append('location', location)
+        // userData.append('full_name', full_name)
+        // profile_picture && userData.append('profile', profile_picture)
+        // cover_photo && userData.append('cover', cover_photo)
+
+        // const token = await getToken()
+        // dispatch(updateUser({ userData, token })).unwrap()
+
+        // setShowEdit(false)
     }
 
     return (
@@ -24,7 +63,19 @@ const ProfileModal = ({setShowEdit}) => {
                 <div className='bg-white rounded-lg shadow p-6'>
                     <h1 className='text-2xl font-bold text-gray-900 mb-6'>Edit Profile</h1>
 
-                    <form className='space-y-4' onSubmit={handleSaveProfile}>
+                    <form className='space-y-4' onSubmit={e => toast.promise(
+                        handleSaveProfile(e), { loading: 'Saving...' }
+                    )}>
+                    {/* <form className='space-y-4' onSubmit={(e) => {
+                        e.preventDefault()
+                        toast.promise(
+                            handleSaveProfile(), {
+                                loading: 'Saving...',
+                                success: 'Profile updated!',
+                                error: 'Failed to update profile'
+                            }
+                        )
+                    }}> */}
                         {/* Profile Picture */}
                         <div className='flex flex-col items-start gap-3'>
                             <label htmlFor="profile_picture" className='block text-sm font-medium text-gray-700 mb-1'>
@@ -83,8 +134,8 @@ const ProfileModal = ({setShowEdit}) => {
                             <input type="text" className='w-full p-3 border border-gray-200 rounded-lg' placeholder='Please enter your location' onChange={(e) => setEditForm({...editForm, location: e.target.value})} value={editForm.location}/>
                         </div>
 
-                        <div onClick={() => setShowEdit(false)} className='flex justify-end space-x-3 pt-6'>
-                            <button type='button' className='px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer'>Cancel</button>
+                        <div className='flex justify-end space-x-3 pt-6'>
+                            <button onClick={() => setShowEdit(false)}  type='button' className='px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer'>Cancel</button>
 
                             <button type='submit' className='px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg hover:from-indigo-600 hover:to-purple-700 transition cursor-pointer'>Save Changes</button>
                         </div>
