@@ -1,7 +1,8 @@
 # study-buddy
 Study Buddy Social Media Platform
 
-# Left off video at 11:16:48
+# Left off video at 11:55:00
+#   All that is left in the video is to deploy project online
 
 Run Frontend Client:
     - cd src/client
