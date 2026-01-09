@@ -4,6 +4,7 @@ import fs from 'fs'
 import Connection from '../models/Connection.js'
 import Post from '../models/Post.js'
 import { inngest } from '../inngest/index.js'
+import { clerkClient } from '@clerk/express'
 
 // Get user Data using userId
 export const getUserData = async (req, res) => {
@@ -119,7 +120,7 @@ export const discoverUsers = async (req, res) => {
                 ]
             }
         );
-        const filteredUsers = allusers.filter(user => user._id !== userId);
+        const filteredUsers = allUsers.filter(user => user._id !== userId);
         
         res.json({ success: true, users: filteredUsers });
     } catch (error) {
@@ -203,7 +204,7 @@ export const sendConnectionRequest = async (req, res) => {
         if (!connection) {
             const newConnection = await Connection.create({
                 from_user_id: userId,
-                to_user_id
+                to_user_id: id
             });
 
             await inngest.send({
@@ -258,7 +259,7 @@ export const acceptConnectionRequest = async (req, res) => {
         const { userId } = req.auth();
         const { id } = req.body;
 
-        const connection = await Connection.find({ 
+        const connection = await Connection.findOne({ 
             from_user_id: id,
             to_user_id: userId
         });
