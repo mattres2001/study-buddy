@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux'
 import { useAuth } from '@clerk/clerk-react'
 import api from '../api/axios'
 import toast from 'react-hot-toast'
+import ShareModal from './ShareModal'
 
 const PostCard = ({post}) => {
 
@@ -15,6 +16,11 @@ const PostCard = ({post}) => {
     const currentUser = useSelector((state) => state.user.value)
     
     const { getToken } = useAuth()
+
+
+    // WORKING ON THIS SHARE FEATURE
+    const [ showModal, setShowModal ] = useState(false)
+    //------------------------------
 
     const handleLike = async () => {
         try {
@@ -73,10 +79,14 @@ const PostCard = ({post}) => {
                     <span>{12}</span>
                 </div>
                 <div className='flex items-center gap-1'>
-                    <Share2 className='w-4 h-4'/>
+                    <Share2 onClick={() => setShowModal(true)} className='w-4 h-4 cursor-pointer'/>
                     <span>{7}</span>
                 </div>
             </div>
+
+            {/* Share Post Modal */}
+            {showModal && <ShareModal setShowModal={setShowModal} />}
+
 
         </div>
     )
