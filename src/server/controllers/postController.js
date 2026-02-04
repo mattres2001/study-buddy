@@ -68,6 +68,19 @@ export const getFeedPosts = async (req, res) => {
     }
 }
 
+// Get Single Post
+export const getPost = async (req, res) => {
+    try {
+        const { postId } = req.auth();
+        const post = await Post.findById(postId);
+
+        res.json({ success: true, post })
+    } catch (error) {
+        console.log(error)
+        res.json({ success: false, message: error.message })
+    }
+}
+
 // Like Post
 export const likePost = async (req, res) => {
     try {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { ArrowLeft, Send } from 'lucide-react'
+import { ArrowLeft, Send, Link } from 'lucide-react'
 import { useAuth } from '@clerk/clerk-react'
 import Loading from './Loading'
 import api from '../api/axios'
@@ -7,8 +7,6 @@ import toast from 'react-hot-toast'
 
 const ShareModal = ({setShowModal}) => {
 
-
-    
     const [ connections, setConnections ] = useState([])
     const [ loading, setLoading ] = useState(false)
     const { getToken } = useAuth()
@@ -33,6 +31,7 @@ const ShareModal = ({setShowModal}) => {
 
     }
 
+    // Fetch user's connections once document renders
     useEffect(() => {
         fetchConnections()
     },[])
@@ -71,9 +70,15 @@ const ShareModal = ({setShowModal}) => {
                         }
                     </div>
                 </div>
-                <button className='flex items-center justify-center gap-2 text-white py-3 mt-4 w-full rounded bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 active:scale-95 transition cursor-pointer'>
-                    <Send size={18}/> Share
-                </button>
+                <div className='flex gap-2 mt-4'>
+                    <button className='flex-1 flex items-center justify-center gap-2 p-3 rounded cursor-pointer text-black bg-gradient-to-r from-white to-gray-200 hover:from-gray-50 hover:to-gray-300 active:scale-95 transition'>
+                        <Link size={18} className=''/> Copy Link
+                    </button>
+                    <button className='flex-1 flex items-center justify-center gap-2 p-3 rounded cursor-pointer text-white bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 active:scale-95 transition'>
+                        <Send size={18} className=''/> Share
+                    </button>
+
+                </div>
             </div>
         </div>
     )
