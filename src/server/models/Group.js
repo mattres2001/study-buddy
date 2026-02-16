@@ -1,14 +1,13 @@
 import mongoose from 'mongoose';
 
 const groupSchema = new mongoose.Schema({
-    groupID: { type: String, required: true},
-    groupName: { type: string, required: true},
-    description: { type: string, default: ''},
-
-    members: [{ type: string, ref: 'User'}],
-    admins: [{ type: string, ref: 'User'}]
+    _id: { type: String, required: true},
+    groupName: { type: String, required: true, unique: true},
+    description: { type: String, default: ''},
+    members: [{ type: String, ref: 'User'}],
+    admins: [{ type: String, ref: 'User'}]
 }, {timestamps: true});
 
-const group = mongoose.model('groupSchema', groupSchema);
+const Group = mongoose.model('Group', groupSchema);
 
-export default group;
+export default Group;
