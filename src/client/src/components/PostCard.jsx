@@ -46,7 +46,9 @@ const PostCard = ({post}) => {
     const navigate = useNavigate()
 
     return (
-        <div className='bg-white rounded-xl shadow p-4 space-y-4 w-full max-w-2xl'>
+        <div className='bg-white rounded-xl shadow p-4 space-y-4 w-full max-w-2xl cursor-pointer' onClick={() => {
+            navigate('/post/' + post._id)
+        }}>
             {/* User Info */}
             <div onClick={() => navigate('/profile/' + post.user._id)} className='inline-flex items-center gap-3 cursor-pointer'>
                 <img src={post.user.profile_picture} alt="" className='w-10 h-10 rounded-full shadow'/>
@@ -87,7 +89,7 @@ const PostCard = ({post}) => {
             {/* Share Post Modal */}
             {showModal && <ShareModal setShowModal={setShowModal} />}
 
-
+            
         </div>
     )
 }
