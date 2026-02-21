@@ -2,25 +2,36 @@ import { BadgeCheck, Heart, MessageCircle, Share2 } from 'lucide-react'
 import React, { useState } from 'react'
 import moment from 'moment'
 import { dummyUserData } from '../assets/assets'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { useAuth } from '@clerk/clerk-react'
 import api from '../api/axios'
 import toast from 'react-hot-toast'
 import ShareModal from './ShareModal'
+import PostModal from './PostModal'
 
-const PostCard = ({post}) => {
+const PostCard = ({
+    post,
+    variant = "feed"
+}) => {
 
     const postWithHashtags = post.content.replace(/(#\w+)/g, '<span class="text-indigo-600">$1</span>')
     const [ likes, setLikes ] = useState(post.likes_count)
     const currentUser = useSelector((state) => state.user.value)
-    
     const { getToken } = useAuth()
 
 
     // WORKING ON THIS SHARE FEATURE
-    const [ showModal, setShowModal ] = useState(false)
+    const [ showShareModal, setShowShareModal ] = useState(false)
     //------------------------------
+
+    // WORKING ON THIS POST FEATURE
+    const location = useLocation();
+    const isOnThisPostPage = location.pathname === `/post/${post._id}`
+
+    // WORKING ON THIS POST MODAL FEATURE
+    const [ showPostModal, setShowPostModal ] = useState(false)
+    const isModal = variant === "modal"
 
     const handleLike = async () => {
         try {
@@ -46,6 +57,10 @@ const PostCard = ({post}) => {
     const navigate = useNavigate()
 
     return (
+        // <div className={`bg-white rounded-xl shadow p-4 space-y-4 w-full max-w-2xl ${!isOnThisPostPage ? 'cursor-pointer' : ''}`} onClick={() => {
+        //     if (!isOnThisPostPage)
+        //         navigate('/post/' + post._id)
+        // }}>
         <div className='bg-white rounded-xl shadow p-4 space-y-4 w-full max-w-2xl'>
             {/* User Info */}
             <div onClick={() => navigate('/profile/' + post.user._id)} className='inline-flex items-center gap-3 cursor-pointer'>
@@ -75,19 +90,30 @@ const PostCard = ({post}) => {
                     <span>{likes.length}</span>
                 </div>
                 <div className='flex items-center gap-1'>
-                    <MessageCircle className='w-4 h-4'/>
+                    <MessageCircle onClick={(e) => {
+                        e.stopPropagation()
+
+                        if (!isModal)
+                            setShowPostModal(true)
+                    }} className={`w-4 h-4 ${!isModal ? 'cursor-pointer' : ''}`}/>
                     <span>{12}</span>
                 </div>
                 <div className='flex items-center gap-1'>
-                    <Share2 onClick={() => setShowModal(true)} className='w-4 h-4 cursor-pointer'/>
+                    <Share2 onClick={() => setShowShareModal(true)} className='w-4 h-4 cursor-pointer'/>
                     <span>{7}</span>
                 </div>
             </div>
 
+            {/* Post Modal */}
+            {showPostModal && <PostModal 
+                post={post}
+                setShowModal={setShowPostModal} 
+            />}
+
             {/* Share Post Modal */}
-            {showModal && <ShareModal setShowModal={setShowModal} />}
+            {showShareModal && <ShareModal setShowModal={setShowShareModal} />}
 
-
+            
         </div>
     )
 }

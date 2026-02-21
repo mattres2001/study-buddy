@@ -68,6 +68,26 @@ export const getFeedPosts = async (req, res) => {
     }
 }
 
+// Get Single Post
+export const getPost = async (req, res) => {
+    try {
+        const { postId } = req.params;
+        const post = await Post.findById(postId).populate("user");
+
+        if (!post) {
+            return res.json({
+                success: false,
+                message: "Post not found"
+            })
+        }
+
+        res.json({ success: true, post })
+    } catch (error) {
+        console.log(error)
+        res.json({ success: false, message: error.message })
+    }
+}
+
 // Like Post
 export const likePost = async (req, res) => {
     try {
