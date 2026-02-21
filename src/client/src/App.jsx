@@ -8,6 +8,7 @@ import Connections from './pages/Connections'
 import Discover from './pages/Discover'
 import Profile from './pages/Profile'
 import CreatePost from './pages/CreatePost'
+import Post from './pages/Post'
 import { useUser, useAuth } from '@clerk/clerk-react'
 import Layout from './pages/Layout'
 import { Toaster } from 'react-hot-toast'
@@ -78,6 +79,7 @@ const App = () => {
           <Route path='create-post' element={<CreatePost/>}/>
           <Route path='group' element={<GroupProfile/>}/> 
           {/* make sure to have this route */}
+          <Route path='post/:postId' element={<Post/>}/>
         </Route>
       </Routes>
     </>
