@@ -21,6 +21,11 @@ export const menuItemsData = [
     { to: '/profile', label: 'Profile', Icon: UserIcon },
 ];
 
+export const dummyGroupData = {
+    "groupName": "dasdsa",
+    "groupPicture": "stuff"
+}
+
 export const dummyUserData = {
     "_id": "user_2zdFoZib5lNr614LgkONdD8WG32",
     "email": "admin@example.com",

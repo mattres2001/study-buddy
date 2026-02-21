@@ -18,6 +18,7 @@ import { fetchConnections } from './features/connections/connectionsSlice'
 import { addMessage } from './features/messages/messagesSlice'
 import Notification from './components/Notification'
 import toast from 'react-hot-toast'
+import GroupProfile from './pages/GroupProfile'
 
 const App = () => {
   const { user } = useUser()
@@ -76,6 +77,8 @@ const App = () => {
           <Route path='profile' element={<Profile/>}/>
           <Route path='profile/:profileId' element={<Profile/>}/>
           <Route path='create-post' element={<CreatePost/>}/>
+          <Route path='group' element={<GroupProfile/>}/> 
+          {/* make sure to have this route */}
           <Route path='post/:postId' element={<Post/>}/>
         </Route>
       </Routes>
