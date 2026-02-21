@@ -18,7 +18,8 @@ const Post = () => {
 
     const fetchPost = async () => {
         try {
-            const { data } = await api.get('/api/post/view', { 
+            setLoading(true)
+            const { data } = await api.get(`/api/post/${postId}`, { 
                 params: { postId },
                 headers: { Authorization: `Bearer ${await getToken()}` 
             }})
@@ -30,7 +31,6 @@ const Post = () => {
             }
             else
                 toast.error(data.message)
-            setLoading(true)
         } catch (error) {
             toast.error(error.message)
         }
@@ -39,11 +39,11 @@ const Post = () => {
 
     useEffect(() => {
         fetchPost()
-    })
+    }, [postId])
 
     return !loading ? (
-        <div>
-            
+        <div className='flex justify-center mt-6'>
+            {post && <PostCard post={post} />}
         </div>
     ) : <Loading/>
 }
