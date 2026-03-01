@@ -40,21 +40,6 @@ const ProfileModal = ({setShowEdit}) => {
         } catch (error) {
             toast.error(error.message)
         }
-
-
-        // const userData = new FormData()
-        // const { full_name, username, bio, location, profile_picture, cover_photo } = editForm
-        // userData.append('username', username)
-        // userData.append('bio', bio)
-        // userData.append('location', location)
-        // userData.append('full_name', full_name)
-        // profile_picture && userData.append('profile', profile_picture)
-        // cover_photo && userData.append('cover', cover_photo)
-
-        // const token = await getToken()
-        // dispatch(updateUser({ userData, token })).unwrap()
-
-        // setShowEdit(false)
     }
 
     return (
