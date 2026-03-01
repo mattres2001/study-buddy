@@ -19,6 +19,7 @@ import { addMessage } from './features/messages/messagesSlice'
 import Notification from './components/Notification'
 import toast from 'react-hot-toast'
 import GroupProfile from './pages/GroupProfile'
+import CreateGroup from './pages/CreateGroup'
 
 const App = () => {
   const { user } = useUser()
@@ -27,6 +28,13 @@ const App = () => {
   const pathnameRef = useRef(pathname)
 
   const dispatch = useDispatch()
+
+  // ONLY FOR BACKEND TESTING PURPOSES
+  // useEffect(() => {
+  //   if (user)
+  //     getToken().then((token) => console.log(token))
+  // })
+  //----------------------------------
 
   useEffect(() => {
     const fetchData = async () => {
@@ -80,6 +88,7 @@ const App = () => {
           <Route path='group' element={<GroupProfile/>}/> 
           {/* make sure to have this route */}
           <Route path='post/:postId' element={<Post/>}/>
+          <Route path='create-group' element={<CreateGroup/>}/>
         </Route>
       </Routes>
     </>

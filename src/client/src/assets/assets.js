@@ -10,7 +10,9 @@ export const assets = {
     bgImage,
     logo,
     group_users,
-    sponsored_img
+    sponsored_img,
+    sample_profile,
+    sample_cover
 }
 
 export const menuItemsData = [

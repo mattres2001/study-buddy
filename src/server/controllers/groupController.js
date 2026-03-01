@@ -1,4 +1,7 @@
-import Group from "../models/Group";
+import mongoose from 'mongoose';
+import Group from "../models/Group.js";
+import imagekit from '../configs/imagekit.js';
+import fs from 'fs';
 
 // Most likely going to need for each method: const { userID } = req.auth()
 
@@ -6,24 +9,85 @@ import Group from "../models/Group";
 
 //create group and make creator admin
 export const createGroup = async (req, res) => {
+    console.log("AUTH OBJECT:", req.auth);
     try {
+
         const { userId } = req.auth(); // get userID of group creator
-        const { name, description } = req.body; // frontend has to pass name and description of group
+        const { name, description, location } = req.body; // frontend has to pass name and description of group
         
+        if (!name) {
+            return res.json({
+                success: false,
+                message: "Group name is required"
+            })
+        }
+
         // logic to find if a group by name exists, if so 
+        const existingGroup = await Group.findOne({ name: name})
+        if (existingGroup) {
+            return res.json({
+                success: false,
+                message: "A group with this name already exists"
+            })
+        }
 
         const admins = [userId];
         const members = [userId];
 
-        await Group.create({
-            groupName: name,
-            description: description,
-            members: members,
-            admins: admins
-        })
+        // generate a string ID (schema requires it) instead of relying on mongoose auto-ObjectId
+        const newGroupData = {
+            _id: new mongoose.Types.ObjectId().toString(),
+            name,
+            description,
+            location,
+            members,
+            admins
+        }
+
+        const picture = req.files.group_picture && req.files.group_picture[0];
+        const cover = req.files.cover_photo && req.files.cover_photo[0];
+
+        if (picture) {
+            const buffer = fs.readFileSync(picture.path);
+            const response = await imagekit.upload({
+                file: buffer,
+                fileName: picture.originalname,
+            });
+
+            const url = imagekit.url({
+                path: response.filePath,
+                transformation: [
+                    { quality: 'auto' },
+                    { format: 'webp' },
+                    { width: '512' }
+                ]
+            });
+            newGroupData.group_picture = url;
+        }
+
+        if (cover) {
+            const buffer = fs.readFileSync(cover.path);
+            const response = await imagekit.upload({
+                file: buffer,
+                fileName: cover.originalname,
+            });
+
+            const url = imagekit.url({
+                path: response.filePath,
+                transformation: [
+                    { quality: 'auto' },
+                    { format: 'webp' },
+                    { width: '1280' }
+                ]
+            });
+            newGroupData.cover_photo = url;
+        }
+
+        const newGroup = await Group.create(newGroupData)
 
         res.json({
             success: true,
+            group: newGroup,
             message: "Group created successfully"
         });
     } catch (error) {

@@ -6,6 +6,11 @@ import {
 import { protect } from '../middleware/auth.js';
 import { upload } from '../configs/multer.js';
 
-groupRouter.post('/create-group', protect, createGroup);
+const groupRouter = express.Router();
+
+groupRouter.post('/create', protect, upload.fields([
+    { name: 'group_picture', maxCount: 1 },
+    { name: 'cover_photo', maxCount: 1 }
+]), createGroup);
 
 export default groupRouter
