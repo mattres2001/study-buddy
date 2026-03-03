@@ -13,7 +13,7 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}) => {
     const { signOut } = useClerk()
 
     return (
-        <div className={`w-60 x1:w-72 bg-white border-r border-gray-200 flex flex-col 
+        <div className={`w-60 xl:w-72 bg-white border-r border-gray-200 flex flex-col 
             justify-between items-center max-sm:absolute top-0 bottom-0 z-20 
             ${sidebarOpen ? 'translate-x-0' : 'max-sm:-translate-x-full'} transition-all
             duration-300 east-in-out`}>

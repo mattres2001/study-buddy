@@ -48,7 +48,7 @@ const Feed = () => {
             </div>
 
             {/* Right sidebar */}
-            <div className='max-xl:hidden sticky top-0'>
+            {/* <div className='max-xl:hidden sticky top-0'>
                 <div className='max-w-xs bg-white text-xs p-4 rounded-md inline-flex flex-col gap-2 shadow'>
                     <h3 className='text-slate-800 font-semibold'>Sponsored</h3>
                     <img src={assets.sponsored_img} className='w-75 h-50 rounded-md' alt="" />
@@ -56,7 +56,7 @@ const Feed = () => {
                     <p className='text-slate-400'>Supercharge your marketing with a powerful, easy-to-use platform built for results.</p>
                 </div>
                 <RecentMessages />
-            </div>
+            </div> */}
         </div>
     ) : <Loading />
 }
