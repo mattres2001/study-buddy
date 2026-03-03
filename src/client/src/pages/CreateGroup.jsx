@@ -15,17 +15,6 @@ const CreateGroup = () => {
     // Create group modal state
     const [ showModal, setShowModal ] = useState(false)
 
-    // Create group form state
-    const [ editForm, setEditForm ] = useState({
-        name: '',
-        description: '',
-        group_picture: null,
-        cover_photo: null,
-        location: '',
-        members: [userId],
-        admins: [userId]
-    })
-
     return (
         <div className='min-h-screen bg-gradient-to-b from-slate-50 to-white'>
             <div className='max-w-6xl mx-auto p-6'>

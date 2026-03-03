@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import Group from "../models/Group.js";
+import User from "../models/User.js";
 import imagekit from '../configs/imagekit.js';
 import fs from 'fs';
 
@@ -47,6 +48,7 @@ export const createGroup = async (req, res) => {
         const picture = req.files.group_picture && req.files.group_picture[0];
         const cover = req.files.cover_photo && req.files.cover_photo[0];
 
+        // Upload group profile picture
         if (picture) {
             const buffer = fs.readFileSync(picture.path);
             const response = await imagekit.upload({
@@ -65,6 +67,7 @@ export const createGroup = async (req, res) => {
             newGroupData.group_picture = url;
         }
 
+        // Upload group cover photo
         if (cover) {
             const buffer = fs.readFileSync(cover.path);
             const response = await imagekit.upload({
@@ -83,7 +86,15 @@ export const createGroup = async (req, res) => {
             newGroupData.cover_photo = url;
         }
 
+        // Create new group in database
         const newGroup = await Group.create(newGroupData)
+
+        // Add group to User's profile
+        await User.updateOne(
+            { _id: userId }, 
+            { $addToSet: { groups: newGroup._id } }
+        );
+
 
         res.json({
             success: true,
