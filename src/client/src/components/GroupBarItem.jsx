@@ -1,7 +1,7 @@
 import React from 'react'
 import { assets } from '../assets/assets.js'
 
-const GroupCircle = ({ group }) => {
+const GroupBarItem = ({ group }) => {
     const profile = group?.group_picture || assets.sample_profile;
     const cover = group?.cover_photo || assets.sample_cover;
     const name = group?.name || 'Study Group';
@@ -22,11 +22,11 @@ const GroupCircle = ({ group }) => {
                     />
                 </div>
             </div>
-            <div className="px-6 py-2 text-gray-600 space-y-1 font-medium text-center truncate">
+            <div className="px-3 py-2 text-gray-600 space-y-1 font-medium truncate">
                 {name}
             </div>
         </div>
     )
 }
 
-export default GroupCircle
+export default GroupBarItem
