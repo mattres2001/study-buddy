@@ -7,6 +7,7 @@ const meetingSchema = new mongoose.Schema({
     started_at: {type: Date, default: Date.now},
     ended_at: {type: Date, default: null},
     participants: [{type: String, ref: 'User'}],
+    description: {type: String},
     location: {type: String, default: ''},
 }, {timestamps: true});
 
