@@ -1,9 +1,25 @@
 import React from 'react'
-
-const GroupCard = () => {
+import banner from "../assets/sample_cover.jpg"
+const GroupCard = ({group}) => {
     return (
-        <div className='bg-white rounded-xl shadow p-4 space-y-4 w-full max-w-2xl'>
-            <div className='inline-flex items-center gap-3 cursor-pointer'></div>
+        <div className="bg-white rounded-xl shadow overflow-hidden w-80 ml-6 mt-6">
+            <img src={group.cover} alt="Group card banner" className="w-full h-40 object-cover"/>
+
+            {/*content after banner with group info*/} 
+
+            <div className="p-4 space-y-3">
+                <h2 className="text-lg font-semibold">
+                    {group.name}
+                </h2>
+
+                <p className="text-sm text-gray-500">
+                    {group.memberCount} members
+                </p>
+
+                <button className="w-full bg-gray-200 hover:bg-gray-300 rounded-lg py-2 font-medium">
+                    View group
+                </button>
+            </div>
         </div>
     )
 }
