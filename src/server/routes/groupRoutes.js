@@ -12,5 +12,6 @@ groupRouter.post('/create', protect, upload.fields([
     { name: 'group_picture', maxCount: 1 },
     { name: 'cover_photo', maxCount: 1 }
 ]), createGroup);
+groupRouter.get('/:groupId', protect, getGroupData)
 
 export default groupRouter

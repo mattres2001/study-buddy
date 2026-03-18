@@ -26,7 +26,7 @@ const Profile = () => {
     const fetchUser = async (profileId) => {
         const token = await getToken()
         try {
-            const {data } = await api.post('/api/user/profiles', { profileId }, {
+            const { data } = await api.post('/api/user/profiles', { profileId }, {
                 headers: { Authorization: `Bearer ${token}` }
             })
             if (data.success) {

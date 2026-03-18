@@ -1,59 +1,45 @@
-import React from 'react'
-import GroupCard from '../components/GroupCard'
-import banner from '../assets/sample_cover.jpg'
-
-
-const groups = [
-  {id:1,
-    name: 'Study Buddies',
-    cover: banner,
-    memberCount:12,
-  },
-  {
-    id: 2,
-    name: 'Math Squad',
-    cover: banner,
-    memberCount: 8,
-  },
-  {
-    id: 3,
-    name: 'Physics Crew',
-    cover: banner,
-    memberCount: 21,
-  },
-  {id:4,
-    name: 'Study Buddies dupe',
-    cover: banner,
-    memberCount:12,
-  },
-  {
-    id: 5,
-    name: 'Math Squad dupe',
-    cover: banner,
-    memberCount: 8,
-  },
-  {
-    id: 6,
-    name: 'Physics Crew dupe',
-    cover: banner,
-    memberCount: 21,
-  },
-]
-
+import React, { useState, useEffect } from 'react'
+import GroupMemberList from '../components/GroupMemberList'
+import GroupEvents from '../components/GroupEvents'
+import { useParams } from 'react-router-dom'
+import { useAuth } from '@clerk/clerk-react'
+import toast from 'react-hot-toast'
+import api from 'axios'
 
 const GroupProfile = () => {
-  return (
-    <div className='p-6 ml-8'>
-      <h1 className='text-2xl font-bold mb-6'>My Group's</h1>
 
-      <div className='flex flex-wrap gap-6'>
-        {groups.map((group) => (
-          <GroupCard key={group.id} group={group}/>
-        ))}
-      </div>
+    const { getToken } = useAuth()
+    const { groupId } = useParams()
+    const [ group, setGroup ] = useState(null)
+
+    const fetchGroup = async (groupId) => {
+        const token = await getToken()
+        try {
+            const { data } = await api.get(`http://localhost:4000/api/group/${groupId}`, { 
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            
+            if (data.success) {
+                console.log(data)
+                setGroup(data.group)
+            } else {
+                toast.error(data.message)
+            }
+        } catch (error) {
+            toast.error(error.message)
+        }
+    }
+
+    useEffect(() => {
+        fetchGroup(groupId)
+    }, [groupId])
+
+    return (
+    <div className="flex gap-4 px-4 max-w-[1200px] mx-auto">
+        {group && <GroupMemberList group={group} className="w-1/2" />}
+        {group && <GroupEvents group={group} className="w-1/2" />}
     </div>
-   
-  )
+    )
 }
 
 export default GroupProfile
