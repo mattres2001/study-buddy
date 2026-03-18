@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import GroupCard from '../components/GroupCard'
 import GroupMemberList from '../components/GroupMemberList'
 import GroupEvents from '../components/GroupEvents'
 import { useParams } from 'react-router-dom'
