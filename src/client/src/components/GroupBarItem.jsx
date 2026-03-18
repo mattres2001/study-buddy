@@ -1,13 +1,18 @@
 import React from 'react'
 import { assets } from '../assets/assets.js'
+import { useNavigate } from 'react-router-dom'
 
 const GroupBarItem = ({ group }) => {
     const profile = group?.group_picture || assets.sample_profile;
     const cover = group?.cover_photo || assets.sample_cover;
     const name = group?.name || 'Study Group';
+    const navigate = useNavigate()
 
     return (
-        <div className="relative w-48 rounded-lg overflow-hidden cursor-pointer border border-gray-200">
+        <div 
+            className="relative w-48 rounded-lg overflow-hidden cursor-pointer border border-gray-200" 
+            onClick={() => navigate(`/group/${group._id}`)
+        }>
             <div className="h-30 w-full">
                 <img
                     src={cover}

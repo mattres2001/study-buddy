@@ -95,7 +95,6 @@ export const createGroup = async (req, res) => {
             { $addToSet: { groups: newGroup._id } }
         );
 
-
         res.json({
             success: true,
             group: newGroup,
@@ -111,9 +110,11 @@ export const createGroup = async (req, res) => {
 export const getGroupData = async (req, res) => {
 
     //make sure to find the correct group by its ID.
+
+    console.log('here')
     try {
-        const { groupID } = req.auth();
-        const group = await Group.findById(groupID);
+        const { groupId } = req.params;
+        const group = await Group.findById(groupId).populate('members', 'full_name username profile_picture');
         if (!group) {
             return res.json({
                 success: false,
