@@ -85,7 +85,7 @@ const App = () => {
           <Route path='profile' element={<Profile/>}/>
           <Route path='profile/:profileId' element={<Profile/>}/>
           <Route path='create-post' element={<CreatePost/>}/>
-          <Route path='group' element={<GroupProfile/>}/> 
+          <Route path='group/:groupId' element={<GroupProfile/>}/> 
           {/* make sure to have this route */}
           <Route path='post/:postId' element={<Post/>}/>
           <Route path='create-group' element={<CreateGroup/>}/>
