@@ -1,9 +1,38 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import CreateEventModal from './CreateEventModal'
+import { useAuth } from '@clerk/clerk-react'
+import toast from 'react-hot-toast'
+import api from '../api/axios'
 
-const GroupEvents = ({ group, events, isAdmin = true }) => {
+const GroupEvents = ({ group, isAdmin = true }) => {
     
     // Create event modal state
     const [ showModal, setShowModal ] = useState(false)
+    const [ events, setEvents ] = useState([])
+    const { getToken } = useAuth()
+
+    const fetchEvents = async () => {
+        try {
+            const token = await getToken()
+            const { data } = await api.get(`/api/event/${group._id}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+
+            if (data.success) {
+                setEvents(data.events)
+                console.log(data)
+            } else
+                toast.error(data.message)
+        } catch (error) {
+            toast.error(error.message)
+        }
+    }
+
+    useEffect(() => {
+        if (group?._id) {
+            fetchEvents();
+        }
+    }, [group]);
 
 
     return (
@@ -15,7 +44,8 @@ const GroupEvents = ({ group, events, isAdmin = true }) => {
                 {/* Admin Add Event button */}
                 {isAdmin && (
                 <button
-                    className="bg-indigo-500 text-white text-sm px-3 py-1 rounded hover:bg-indigo-600 transition"
+                    onClick={() => setShowModal(true)}
+                    className="cursor-pointer bg-indigo-500 text-white text-sm px-3 py-1 rounded hover:bg-indigo-600 transition"
                 >
                     Add Event
                 </button>
@@ -47,6 +77,15 @@ const GroupEvents = ({ group, events, isAdmin = true }) => {
                 <p className="text-gray-500 text-sm">No upcoming events</p>
                 )}
             </div>
+
+            {showModal && <CreateEventModal 
+                group={group} 
+                setShowModal={setShowModal}
+                onEventCreated={(newEvent) => {
+                    setEvents(prev => [newEvent, ...prev]); // add to top
+                }
+            }/>}
+
         </div>
     )
 }
