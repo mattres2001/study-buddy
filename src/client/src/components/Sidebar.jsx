@@ -1,16 +1,19 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { assets, dummyUserData } from '../assets/assets'
 import { Link, useNavigate } from 'react-router-dom'
 import MenuItems from './MenuItems'
 import { CirclePlus, LogOut } from 'lucide-react'
 import { UserButton, useClerk} from '@clerk/clerk-react'
 import { useSelector } from 'react-redux'
+import CreateEventModal from './CreateEventModal'
+import CreateSessionModal from './CreateSessionModal'
 
 const Sidebar = ({sidebarOpen, setSidebarOpen}) => {
     
     const navigate = useNavigate()
     const user = useSelector((state) => state.user.value)
     const { signOut } = useClerk()
+    const [ showModal, setShowModal ] = useState(false)
 
     return (
         <div className={`w-60 xl:w-72 bg-white border-r border-gray-200 flex flex-col 
@@ -23,12 +26,20 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}) => {
 
                 <MenuItems setSidebarOpen={setSidebarOpen}/>
 
-                <Link to='/create-post' className='flex items-center justify-center gap-2 py-2.5
+                {/* <Link to='/create-post' className='flex items-center justify-center gap-2 py-2.5
                     mt-6 mx-6 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 
                     hover:from_indigo-700 hover:to-purple-800 active:scale-95 transition text-white
                     cursor-pointer'>
                     <CirclePlus classname='w-5 h-5'/>
                     Create Post
+                </Link> */}
+
+                <Link className='flex items-center justify-center gap-2 py-2.5
+                    mt-6 mx-6 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 
+                    hover:from_indigo-700 hover:to-purple-800 active:scale-95 transition text-white
+                    cursor-pointer' onClick={() => setShowModal(true)}>
+                    <CirclePlus classname='w-5 h-5'/>
+                    Start Study Session
                 </Link>
             </div>
             <div className='w-full border-t border-gray-200 p-4 px-7 flex items-center justify-between'>
@@ -42,6 +53,12 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}) => {
                 <LogOut onClick={ signOut } className='w-4.5 text-gray-400 hover:text-gray-700 transition 
                 cursor-pointer'/>
             </div>
+
+            {showModal && <CreateSessionModal 
+                groups={user.groups}
+                setShowModal={setShowModal}
+                type="session"
+            />}
         </div>
     )
 }

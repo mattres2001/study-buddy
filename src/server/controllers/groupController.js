@@ -110,8 +110,6 @@ export const createGroup = async (req, res) => {
 export const getGroupData = async (req, res) => {
 
     //make sure to find the correct group by its ID.
-
-    console.log('here')
     try {
         const { groupId } = req.params;
         const group = await Group.findById(groupId).populate('members', 'full_name username profile_picture');

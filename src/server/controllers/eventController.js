@@ -7,11 +7,12 @@ export const createEvent = async (req, res) => {
         const { userId } = req.auth();
         const { 
             title, 
-            group,
+            groupId,
             started_at, 
             ended_at, 
             location, 
-            visibility
+            visibility,
+            description
         } = req.body;
 
         // title is required
@@ -23,7 +24,7 @@ export const createEvent = async (req, res) => {
         }
 
         // group is required
-        if (!group) {
+        if (!groupId) {
             return res.json({
                 success: false,
                 message: "Group is required"
@@ -40,12 +41,13 @@ export const createEvent = async (req, res) => {
 
         const newEventData = {
             title,
-            group, 
+            groupId, 
             started_by: userId,
             started_at,
             ended_at,
             location,
-            visibility
+            visibility,
+            description
         }
 
         const picture = req.files.flyer_photo && req.files.flyer_photo[0];
@@ -89,28 +91,24 @@ export const getEvents = async (req, res) => {
         const { userId } = req.auth();
         const { groupId } = req.params;
         const events = await Event.find({
-            group: groupId,
-            $and: [
-                {
-                    $or: [
-                        { visibility: 'public' },
-                        { started_by: userId } // allow creator to see private
-                    ]
-                },
-                {
-                    $or: [
-                        { started_at: { $gt: now } },
-                        { 
-                            started_at: { $lte: now },
-                            $or: [
-                                { ended_at: { $gte: now } },
-                                { ended_at: null }
-                            ]
-                        }
-                    ]
-                }
+            groupId: groupId,
+
+            // visibility rule
+            $or: [
+                { visibility: 'public' },
+                { started_by: userId }
+            ],
+
+            // ONLY check if event hasn't ended
+            $or: [
+                { ended_at: null },
+                { ended_at: { $gte: now } }
             ]
         }).sort({ started_at: 1 });
+
+
+        // console.log("NOW:", now)
+        // console.log("Events: ", events)
 
         res.json({
             success: true,

@@ -3,11 +3,14 @@ import CreateEventModal from './CreateEventModal'
 import { useAuth } from '@clerk/clerk-react'
 import toast from 'react-hot-toast'
 import api from '../api/axios'
+import EventDetailsModal from './EventDetailsModal'
 
 const GroupEvents = ({ group, isAdmin = true }) => {
     
     // Create event modal state
     const [ showModal, setShowModal ] = useState(false)
+    const [ showEventModal, setShowEventModal ] = useState(false)
+    const [selectedEvent, setSelectedEvent] = useState(null)
     const [ events, setEvents ] = useState([])
     const { getToken } = useAuth()
 
@@ -32,7 +35,7 @@ const GroupEvents = ({ group, isAdmin = true }) => {
         if (group?._id) {
             fetchEvents();
         }
-    }, [group]);
+    }, [group._id]);
 
 
     return (
@@ -55,36 +58,66 @@ const GroupEvents = ({ group, isAdmin = true }) => {
             {/* Meetings list */}
             <div className="flex flex-col space-y-2 max-h-[60vh] overflow-y-auto">
                 {events && events.length > 0 ? (
-                events.map(events => (
-                    <div
-                        key={events._id}
-                        className="flex flex-col bg-gray-50 rounded px-3 py-2 shadow-sm hover:bg-gray-100 transition cursor-pointer"
-                    >
-                    <span className="font-medium text-base truncate" title={events.title}>
-                        {events.title}
-                    </span>
-                    <span className="text-sm text-gray-500 truncate" title={new Date(events.started_at).toLocaleString()}>
-                        {new Date(events.started_at).toLocaleString()}
-                    </span>
-                    {events.location && (
-                        <span className="text-sm text-gray-500 truncate" title={events.location}>
-                        📍 {events.location}
-                        </span>
-                    )}
-                    </div>
-                ))
+                    events.map(event => (
+                        <div
+                            key={event._id}
+                            onClick={() => {
+                                setSelectedEvent(event)
+                                setShowEventModal(true)
+                            }}
+                            className="flex gap-3 bg-gray-50 rounded px-3 py-2 shadow-sm hover:bg-gray-100 transition cursor-pointer"
+                        >
+                            {/* Flyer Image */}
+                            {event.flyer_photo && (
+                                <img
+                                    src={event.flyer_photo}
+                                    alt={event.title}
+                                    className="w-14 h-14 object-cover rounded-md flex-shrink-0"
+                                />
+                            )}
+
+                            {/* Event Info */}
+                            <div className="flex flex-col min-w-0">
+                                <span className="font-medium text-base truncate" title={event.title}>
+                                    {event.title}
+                                </span>
+
+                                <span
+                                    className="text-sm text-gray-500 truncate"
+                                    title={new Date(event.started_at).toLocaleString()}
+                                >
+                                    {new Date(event.started_at).toLocaleString()}
+                                </span>
+
+                                {event.location && (
+                                    <span className="text-sm text-gray-500 truncate" title={event.location}>
+                                        📍 {event.location}
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+                    ))
                 ) : (
                 <p className="text-gray-500 text-sm">No upcoming events</p>
                 )}
             </div>
 
+            {showEventModal && (
+                <EventDetailsModal
+                    event={selectedEvent}
+                    setShowModal={setShowEventModal}
+                    isAdmin={isAdmin}
+                />
+            )}
+
             {showModal && <CreateEventModal 
                 group={group} 
                 setShowModal={setShowModal}
-                onEventCreated={(newEvent) => {
+                onCreated={(newEvent) => {
                     setEvents(prev => [newEvent, ...prev]); // add to top
-                }
-            }/>}
+                }}
+                type="event"
+            />}
 
         </div>
     )

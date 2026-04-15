@@ -1,16 +1,38 @@
 import React, { useState, useEffect } from 'react'
 import GroupMemberList from '../components/GroupMemberList'
 import GroupEvents from '../components/GroupEvents'
+import GroupSessions from '../components/GroupSessions'
+import LiveSessionBanner from '../components/LiveSessionBanner'
 import { useParams } from 'react-router-dom'
-import { useAuth } from '@clerk/clerk-react'
+import { useUser, useAuth } from '@clerk/clerk-react'
 import toast from 'react-hot-toast'
-import api from 'axios'
+import api from '../api/axios'
 
 const GroupProfile = () => {
 
-    const { getToken } = useAuth()
+    const { userId, getToken } = useAuth()
     const { groupId } = useParams()
     const [ group, setGroup ] = useState(null)
+    const [ sessions, setSessions ] = useState([])
+    const isAdmin = group?.admins?.includes(userId)
+
+    useEffect(() => {
+        if (!groupId) return
+
+        const fetchSessions = async () => {
+            const token = await getToken()
+
+            const { data } = await api.get(`/api/session/${groupId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+
+            if (data.success) {
+                setSessions(data.sessions)
+            }
+        }
+
+        fetchSessions()
+    }, [groupId])
 
     const fetchGroup = async (groupId) => {
         const token = await getToken()
@@ -35,11 +57,59 @@ const GroupProfile = () => {
     }, [groupId])
 
     return (
-    <div className="flex gap-4 px-4 max-w-[1200px] mx-auto">
-        {group && <GroupMemberList group={group} className="w-1/2" />}
-        {group && <GroupEvents group={group} className="w-1/2" />}
+    <div className="max-w-[1200px] mx-auto">
+
+        {/* 🔹 Cover Photo */}
+        {group && (
+            <div className="relative">
+                <img
+                    src={group.cover_photo}
+                    alt="cover"
+                    className="w-full h-48 object-cover rounded-lg"
+                />
+
+                {/* 🔹 Group Picture */}
+                <div className="absolute -bottom-12 left-6">
+                    <img
+                        src={group.group_picture}
+                        alt="group"
+                        className="w-24 h-24 rounded-full border-4 border-white object-cover"
+                    />
+                </div>
+            </div>
+        )}
+
+        {/* 🔹 Name + Description */}
+        {group && (
+            <div className="mt-16 px-4">
+                <h1 className="text-2xl font-bold">{group.name}</h1>
+                <p className="text-gray-600 mt-2">{group.description}</p>
+            </div>
+        )}
+
+
+        <div className='px-4 pt-4'>
+            <LiveSessionBanner 
+                group={group}
+                isAdmin={isAdmin}
+                sessions={sessions}
+                setSessions={setSessions}
+            />
+        </div>
+
+        {/* 🔹 Main Content */}
+        <div className="flex gap-4 px-4 mt-6">
+            {group && <GroupMemberList group={group} className="w-1/2" />}
+            {group && <GroupEvents group={group} className="w-1/2" />}
+            {group && <GroupSessions
+                group={group}
+                sessions={sessions}
+                setSessions={setSessions}
+            />}
+        </div>
+
     </div>
-    )
+    )    
 }
 
 export default GroupProfile

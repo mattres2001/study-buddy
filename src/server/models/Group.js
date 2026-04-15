@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 const groupSchema = new mongoose.Schema({
     _id: { type: String, required: true},
     name: { type: String, required: true, unique: true},
+    subject: { type: String, required: true },
+    school: { type: String, default: '' },
     description: { type: String, default: ''},
     group_picture: {type: String, default: ''},
     cover_photo: {type: String, default: ''},
