@@ -1,7 +1,9 @@
 import express from 'express';
 import { 
     createEvent,
-    getEvents
+    getEvents,
+    updateEvent,
+    deleteEvent
 } from '../controllers/eventController.js'
 import { protect } from '../middleware/auth.js';
 import { upload } from '../configs/multer.js';
@@ -12,5 +14,6 @@ eventRouter.post('/create', protect, upload.fields([
     { name: 'flyer_photo', maxCount: 1 }
 ]), createEvent);
 eventRouter.get('/:groupId', protect, getEvents);
-
+eventRouter.patch('/:eventId/update', protect, updateEvent)
+eventRouter.delete('/:eventId', protect, deleteEvent)
 export default eventRouter

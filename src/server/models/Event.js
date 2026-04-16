@@ -5,7 +5,8 @@ const eventSchema = new mongoose.Schema({
     ...baseScheduleSchema.obj,
     rsvp: [{ type: String, ref: 'User' }],
     visibility: { type: String, enum: ['public','private'], default: 'private' },
-    flyer_photo: {type: String, default: ''}
+    flyer_photo: {type: String, default: ''},
+    status: { type: String, default: ''}
 }, { timestamps: true });
 
 const Event = mongoose.model('Event', eventSchema);

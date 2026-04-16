@@ -51,12 +51,12 @@ export const startSession = async (req, res) => {
 export const updateSessionVibe = async (req, res) => {
     try {
         const { sessionId } = req.params
-        const { vibe, emoji } = req.body
+        const { text, emoji } = req.body
 
         const session = await Session.findByIdAndUpdate(
             sessionId,
             {
-                vibe: { vibe, emoji }
+                vibe: { text, emoji }
             },
             { new: true }
         )
@@ -220,5 +220,26 @@ export const getUpcomingGroupSessions = async (req, res) => {
             success: false,
             message: error.message
         })
+    }
+}
+
+export const updateDescription = async (req, res) => {
+    try {
+        const { sessionId } = req.params
+        const { description } = req.body
+
+        const session = await Session.findById(sessionId)
+
+        if (!session) {
+            return res.status(404).json({ success: false })
+        }
+
+        session.description = description
+        await session.save()
+
+        res.json({ success: true, session })
+
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message })
     }
 }

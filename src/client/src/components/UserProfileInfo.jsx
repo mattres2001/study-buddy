@@ -12,6 +12,32 @@ const UserProfileInfo = ({ user, posts, profileId, setShowEdit }) => {
                 </div>
 
                 <div className='w-full pt-16 md:pt-0 md:pl-36'>
+                    {/* Courses + Subjects Tags */}
+                    {(user.courses?.length > 0 || user.subjects?.length > 0) && (
+                        <div className="flex flex-wrap gap-2 mb-3">
+
+                            {/* Courses */}
+                            {user.courses?.map((course, i) => (
+                                <span
+                                    key={`course-${i}`}
+                                    className="text-xs px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 font-medium"
+                                >
+                                    🎓 {course}
+                                </span>
+                            ))}
+
+                            {/* Subjects */}
+                            {user.subjects?.map((subject, i) => (
+                                <span
+                                    key={`subject-${i}`}
+                                    className="text-xs px-3 py-1 rounded-full bg-pink-100 text-pink-700 font-medium"
+                                >
+                                    📚 {subject}
+                                </span>
+                            ))}
+                        </div>
+                    )}
+
                     <div className='flex flex-col md:flex-row items-start justify-between'>
                         <div>
                             <div className='flex items-center gap-3'>
@@ -30,6 +56,7 @@ const UserProfileInfo = ({ user, posts, profileId, setShowEdit }) => {
                                 </button>
                         }
                     </div>
+
                     <p className='text-gray-700 text-sm max-w-md mt-4'>{user.bio}</p>
 
                     <div className='flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-500 mt-4'>

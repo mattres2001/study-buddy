@@ -7,7 +7,9 @@ import {
     updateSessionVibe,
     joinSession,
     endSession,
-    getUpcomingGroupSessions
+    getUpcomingGroupSessions,
+    updateDescription
+
 } from '../controllers/sessionController.js'
 
 const sessionRouter = express.Router();
@@ -18,5 +20,6 @@ sessionRouter.get('/:groupId/upcoming', protect, getUpcomingGroupSessions)
 sessionRouter.patch('/:sessionId/vibe', protect, updateSessionVibe)
 sessionRouter.post('/:sessionId/join', protect, joinSession)
 sessionRouter.post('/:sessionId/end', protect, endSession)
+sessionRouter.patch('/:sessionId/description', protect, updateDescription)
 
 export default sessionRouter

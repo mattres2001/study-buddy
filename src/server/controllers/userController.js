@@ -32,11 +32,12 @@ export const getUserData = async (req, res) => {
     }
 }
 
+
 // Update Data using userId
 export const updateUserData = async (req, res) => {
     try {
         const { userId } = req.auth();
-        let { username, bio, location, full_name } = req.body;
+        let { username, bio, location, full_name, courses, subjects } = req.body;
 
         const tempUser = await User.findById(userId);
 
@@ -54,7 +55,9 @@ export const updateUserData = async (req, res) => {
             username,
             bio,
             location,
-            full_name
+            full_name,
+            courses: courses ? JSON.parse(courses) : [],
+            subjects: subjects ? JSON.parse(subjects) : []
         };
 
         const profile = req.files.profile && req.files.profile[0];
@@ -296,14 +299,17 @@ export const acceptConnectionRequest = async (req, res) => {
 export const getUserProfiles = async (req, res) => {
     try {
         const { profileId } = req.body;
-        const profile = await User.findById(profileId);
+        const profile = await User.findById(profileId).populate({
+            path: 'groups',
+            select: 'name group_picture cover_photo'
+        });
 
         if (!profile) {
             return res.json({ success: false, message: 'Profile not found' });
         }
 
         const posts = await Post.find({ user: profileId }).populate('user');
-        res.json({ success: true, profile, posts });
+        res.json({ success: true, profile, posts, groups: profile.groups || [] });
     } catch (error) {
         console.log(error);
         res.json({ success: false, message: error.message });

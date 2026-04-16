@@ -7,7 +7,7 @@ const sessionSchema = new mongoose.Schema({
     max_participants: { type: Number },
     duration_minutes: { type: Number },
     vibe: {
-        vibe: String,
+        text: String,
         emoji: String
     }
 }, {timestamps: true});

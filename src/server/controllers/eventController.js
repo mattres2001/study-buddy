@@ -1,6 +1,7 @@
 import imagekit from '../configs/imagekit.js';
 import Event from '../models/Event.js'
 import fs from 'fs'
+import Group from '../models/Group.js'
 
 export const createEvent = async (req, res) => {
     try {
@@ -117,5 +118,99 @@ export const getEvents = async (req, res) => {
     } catch (error) {
         console.log(error);
         res.json({ success: false, message: error.message })
+    }
+}
+
+export const updateEvent = async (req, res) => {
+    try {
+        const { userId } = req.auth()
+        const { eventId } = req.params
+
+        const event = await Event.findById(eventId)
+
+        if (!event) {
+            return res.status(404).json({
+                success: false,
+                message: "Event not found"
+            })
+        }
+
+        const group = await Group.findById(event.groupId)
+
+        const isCreator = String(event.started_by) === String(userId)
+        const isAdmin = group?.admins?.includes(userId)
+
+        if (!isCreator && !isAdmin) {
+            return res.status(403).json({
+                success: false,
+                message: "Not authorized"
+            })
+        }
+
+        const {
+            title,
+            description,
+            location,
+            started_at,
+            ended_at,
+            visibility,
+            status
+        } = req.body
+
+
+        
+        if (started_at && ended_at && new Date(started_at) > new Date(ended_at)) {
+            return res.status(400).json({
+                success: false,
+                message: "Start time must be before end time"
+            })
+        }
+
+        if (title !== undefined) event.title = title
+        if (description !== undefined) event.description = description
+        if (location !== undefined) event.location = location
+        if (started_at !== undefined) event.started_at = started_at
+        if (ended_at !== undefined) event.ended_at = ended_at
+        if (visibility !== undefined) event.visibility = visibility
+        if (status !== undefined) event.status = status
+
+        await event.save()
+
+        return res.json({
+            success: true,
+            event
+        })
+
+    } catch (err) {
+        return res.status(500).json({
+            success: false,
+            message: err.message
+        })
+    }
+}
+
+export const deleteEvent = async (req, res) => {
+    try {
+        const { eventId } = req.params
+
+        const event = await Event.findByIdAndDelete(eventId)
+
+        if (!event) {
+            return res.status(404).json({
+                success: false,
+                message: "Event not found"
+            })
+        }
+
+        return res.json({
+            success: true,
+            message: "Event deleted"
+        })
+
+    } catch (err) {
+        return res.status(500).json({
+            success: false,
+            message: err.message
+        })
     }
 }

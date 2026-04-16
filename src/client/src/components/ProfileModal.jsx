@@ -19,17 +19,39 @@ const ProfileModal = ({setShowEdit}) => {
         profile_picture: null,
         cover_photo: null,
         full_name: user.full_name,
+        courses: user.courses || [],
+        subjects: user.subjects || []
     })
 
-    const handleSaveProfile = async (e) => {
-        e.preventDefault()
+    const [coursesInput, setCoursesInput] = useState(
+        (user.courses || []).join(", ")
+    )
+
+    const [subjectsInput, setSubjectsInput] = useState(
+        (user.subjects || []).join(", ")
+    )
+
+    const handleSaveProfile = async () => {
+        const parsedCourses = coursesInput
+            .split(",")
+            .map(c => c.trim())
+            .filter(Boolean)
+
+        const parsedSubjects = subjectsInput
+            .split(",")
+            .map(s => s.trim())
+            .filter(Boolean)
+
         try {
             const userData = new FormData()
-            const { full_name, username, bio, location, profile_picture, cover_photo } = editForm
+            const { full_name, username, bio, location, profile_picture, cover_photo, courses, subjects } = editForm
             userData.append('username', username)
             userData.append('bio', bio)
             userData.append('location', location)
             userData.append('full_name', full_name)
+
+            userData.append('courses', JSON.stringify(parsedCourses))
+            userData.append('subjects', JSON.stringify(parsedSubjects))
             profile_picture && userData.append('profile', profile_picture)
             cover_photo && userData.append('cover', cover_photo)
 
@@ -48,9 +70,19 @@ const ProfileModal = ({setShowEdit}) => {
                 <div className='bg-white rounded-lg shadow p-6'>
                     <h1 className='text-2xl font-bold text-gray-900 mb-6'>Edit Profile</h1>
 
-                    <form className='space-y-4' onSubmit={e => toast.promise(
-                        handleSaveProfile(e), { loading: 'Saving...' }
-                    )}>
+                    <form className='space-y-4'
+                        onSubmit={(e) => {
+                            e.preventDefault()
+                            toast.promise(
+                                handleSaveProfile(),
+                                {
+                                    loading: 'Saving...',
+                                    success: 'Profile updated!',
+                                    error: 'Failed to update profile'
+                                }
+                            )
+                        }}
+                    >
                     {/* <form className='space-y-4' onSubmit={(e) => {
                         e.preventDefault()
                         toast.promise(
@@ -111,6 +143,34 @@ const ProfileModal = ({setShowEdit}) => {
                             <textarea rows={3} className='w-full p-3 border border-gray-200 rounded-lg' placeholder='Please enter a short bio' onChange={(e) => setEditForm({...editForm, bio: e.target.value})} value={editForm.bio}/>
                         </div>
 
+                        {/* Courses */}
+                        <div>
+                            <label className='block text-sm font-medium text-gray-700 mb-1'>
+                                Courses
+                            </label>
+                            <input
+                                type="text"
+                                className="w-full p-3 border border-gray-200 rounded-lg"
+                                placeholder="e.g. CS101, Math 202"
+                                value={coursesInput}
+                                onChange={(e) => setCoursesInput(e.target.value)}
+                            />
+                            <p className="text-xs text-gray-400 mt-1">Separate with commas</p>
+                        </div>
+
+                        {/* Subjects */}
+                        <div>
+                            <label className='block text-sm font-medium text-gray-700 mb-1'>
+                                Subjects
+                            </label>
+                            <input
+                                type="text"
+                                className="w-full p-3 border border-gray-200 rounded-lg"
+                                placeholder="e.g. Algorithms, Physics"
+                                value={subjectsInput}
+                                onChange={(e) => setSubjectsInput(e.target.value)}
+                            />
+                        </div>
 
                         <div>
                             <label className='block text-sm font-medium text-gray-700 mb-1'>

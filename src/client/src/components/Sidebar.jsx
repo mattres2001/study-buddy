@@ -57,7 +57,7 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}) => {
             {showModal && <CreateSessionModal 
                 groups={user.groups}
                 setShowModal={setShowModal}
-                type="session"
+                
             />}
         </div>
     )

@@ -12,6 +12,7 @@ import messageRouter from './routes/messagesRoutes.js';
 import groupRouter from './routes/groupRoutes.js';
 import eventRouter from './routes/eventRoutes.js';
 import sessionRouter from './routes/sessionRoutes.js'
+import dashboardRouter from './routes/dashboardRoutes.js'
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use('/api/message', messageRouter);
 app.use('/api/group', groupRouter);
 app.use('/api/event', eventRouter);
 app.use('/api/session', sessionRouter);
+app.use('/api/dashboard', dashboardRouter);
 
 const PORT = process.env.PORT || 4000;
 

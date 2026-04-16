@@ -13,32 +13,40 @@ export const fetchUser = createAsyncThunk('user/fetchUser', async (token) => {
     return data.success ? data.user : null
 })
 
-export const updateUser = createAsyncThunk('user/update', async ({ userData, token }, { rejectWithValue }) => {
-    const { data } = await api.post('/api/user/update', userData, { headers: { Authorization: `Bearer ${token}` }
-    })
+// export const updateUser = createAsyncThunk('user/update', async ({ userData, token }, { rejectWithValue }) => {
+//     const { data } = await api.post('/api/user/update', userData, { headers: { Authorization: `Bearer ${token}` }
+//     })
 
-    if (data.success) {
-        toast.success(data.message)
-        return data.user
-    } else {
-        toast.error(data.message)
-        return null
+//     if (data.success) {
+//         toast.success(data.message)
+//         return data.user
+//     } else {
+//         toast.error(data.message)
+//         return null
+//     }
+// })
+
+export const updateUser = createAsyncThunk(
+    'user/update',
+    async ({ userData, token }, { rejectWithValue }) => {
+        try {
+            const { data } = await api.post('/api/user/update', userData, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+
+            if (!data.success) {
+                return rejectWithValue(data.message)
+            }
+
+            return data.user
+
+        } catch (error) {
+            return rejectWithValue(
+                error.response?.data?.message || error.message
+            )
+        }
     }
-
-    // try {
-    //     const { data } = await api.post('api/user/update', userData, {
-    //         headers: { Authorization: `Bearer ${token}` }
-    //     })
-
-    //     if (!data.success) {
-    //         return rejectWithValue(data.message)
-    //     }
-
-    //     return data.user
-    // } catch (error) {
-    //     return rejectWithValue(error.response?.data?.message || error.message) 
-    // }
-})
+)
 
 const userSlice = createSlice({
     name: 'user',

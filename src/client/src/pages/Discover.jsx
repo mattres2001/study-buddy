@@ -30,7 +30,7 @@ const Discover = () => {
                 setInput('')
             } catch (error) {
                 toast.error(error.message)
-            }xs
+            }
             setLoading(false)
         }
     }  

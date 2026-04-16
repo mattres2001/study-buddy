@@ -3,11 +3,13 @@ import { useAuth } from '@clerk/clerk-react'
 import api from '../api/axios'
 import toast from 'react-hot-toast'
 
-const LiveSessionBanner = ({ sessions, setSessions, group, isAdmin, onSessionEnded }) => {
+const LiveSessionBanner = ({ sessions, setSessions, group, isAdmin, showGroupInfo }) => {
 
+    const [isEditingDescription, setIsEditingDescription] = useState(false)
+    const [descriptionInput, setDescriptionInput] = useState("")
     const [isEditing, setIsEditing] = useState(false)
     const [vibeInput, setVibeInput] = useState({
-        vibe: "",
+        text: "",
         emoji: "✨"
     })
     const { getToken } = useAuth()
@@ -34,6 +36,11 @@ const LiveSessionBanner = ({ sessions, setSessions, group, isAdmin, onSessionEnd
 
     if (!liveSession) return null
 
+    const startEditDescription = () => {
+        setIsEditingDescription(true)
+        setDescriptionInput(liveSession.description || "")
+    }
+
     return (
         <div className="w-full bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-2xl shadow-lg p-6 mb-6 flex flex-col md:flex-row md:items-center md:justify-between">
 
@@ -46,6 +53,31 @@ const LiveSessionBanner = ({ sessions, setSessions, group, isAdmin, onSessionEnd
                 <h1 className="text-2xl md:text-3xl font-bold">
                     {liveSession.title || "Untitled Session"}
                 </h1>
+
+
+                {showGroupInfo && group && (
+                    <div className="mt-1 flex items-center gap-2 text-sm opacity-90">
+
+                        {/* Group name */}
+                        <span className="font-medium">
+                            📘 {group.name}
+                        </span>
+
+                        {/* Optional: members count */}
+                        {group.members && (
+                            <span className="opacity-80">
+                                • {group.members.length} member{group.members.length !== 1 ? "s" : ""}
+                            </span>
+                        )}
+
+                        {/* Optional: location */}
+                        {group.location && showGroupInfo === "dashboard" && (
+                            <span className="opacity-80">
+                                • 📍 {group.location}
+                            </span>
+                        )}
+                    </div>
+                )}
 
                 <span className="text-sm opacity-90">
                     {new Date(liveSession.started_at).toLocaleTimeString([], {
@@ -77,14 +109,14 @@ const LiveSessionBanner = ({ sessions, setSessions, group, isAdmin, onSessionEnd
                         if (isAdmin) {
                             setIsEditing(true)
                             setVibeInput({
-                                vibe: liveSession.vibe?.vibe || "",
+                                text: liveSession.vibe?.text || "",
                                 emoji: liveSession.vibe?.emoji || "✨"
                             })
                         }
                     }}
                 >
                     <span className="bg-white/20 px-3 py-1 rounded-full text-sm">
-                        {liveSession.vibe?.emoji || "✨"} {liveSession.vibe?.vibe}
+                        {liveSession.vibe?.emoji || "✨"} {liveSession.vibe?.text}
                     </span>
                 </div>
 
@@ -110,11 +142,11 @@ const LiveSessionBanner = ({ sessions, setSessions, group, isAdmin, onSessionEnd
                             <input
                                 type="text"
                                 placeholder="Enter vibe (e.g. focused grind)"
-                                value={vibeInput.vibe}
+                                value={vibeInput.text}
                                 onChange={(e) =>
                                     setVibeInput(prev => ({
                                         ...prev,
-                                        vibe: e.target.value
+                                        text: e.target.value
                                     }))
                                 }
                                 className="flex-1 px-3 py-1 rounded text-black"
@@ -166,8 +198,93 @@ const LiveSessionBanner = ({ sessions, setSessions, group, isAdmin, onSessionEnd
                         </div>
                     </div>
                 )}
-
             </div>
+
+            {/* Middle Chat Bubble */}
+            {liveSession.description && (
+                <div className="hidden md:flex flex-1 justify-center px-6" onClick={() => {
+                                if (isAdmin) {
+                                    startEditDescription()
+                                    setIsEditingDescription(true)
+                                }
+                            }}>
+
+                    {isEditingDescription ? (
+                        <div
+                            className="relative w-full max-w-2xl bg-white/20 backdrop-blur-md text-white px-6 py-5 rounded-3xl shadow-lg cursor-pointer"
+                            
+                        >
+
+                            <textarea
+                                value={descriptionInput}
+                                onChange={(e) => setDescriptionInput(e.target.value)}
+                                className="w-full min-h-[100px] bg-white/20 text-white p-3 rounded-lg outline-none resize-none"
+                                placeholder="Write session description..."
+                            />
+
+                            {/* Buttons */}
+                            <div className="flex gap-2 justify-end mt-3">
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        setIsEditingDescription(false)
+                                        setDescriptionInput("")
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+
+                                <button
+                                    onClick={async () => {
+                                        try {
+                                            const token = await getToken()
+
+                                            const { data } = await api.patch(
+                                                `/api/session/${liveSession._id}/description`,
+                                                { description: descriptionInput },
+                                                {
+                                                    headers: {
+                                                        Authorization: `Bearer ${token}`
+                                                    }
+                                                }
+                                            )
+
+                                            if (data.success) {
+                                                setSessions(prev =>
+                                                    prev.map(s =>
+                                                        s._id === liveSession._id
+                                                            ? { ...s, description: data.session.description }
+                                                            : s
+                                                    )
+                                                )
+
+                                                setIsEditingDescription(false)
+                                            }
+
+                                        } catch (err) {
+                                            toast.error(err.message)
+                                        }
+                                    }}
+                                    className="text-sm px-3 py-1 rounded bg-white text-red-500"
+                                >
+                                    Save
+                                </button>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="relative w-full max-w-2xl bg-white/20 backdrop-blur-md text-white px-6 py-5 rounded-3xl shadow-lg">
+
+                            {/* Tail */}
+                            <div className="absolute -left-2 top-6 w-4 h-4 bg-white/20 rotate-45" />
+
+                            <p className="text-base leading-relaxed text-center whitespace-pre-wrap">
+                                {liveSession.description}
+                            </p>
+                        </div>
+                    )}
+
+                </div>
+            )}
 
             {/* Right */}
             <button
@@ -232,7 +349,7 @@ const LiveSessionBanner = ({ sessions, setSessions, group, isAdmin, onSessionEnd
                         : "bg-white text-red-500 hover:bg-gray-100"
                     }`}
             >
-                {isAdmin ? "End Session" : "Join Session"}
+                {isAdmin ? "End Session" : "Join Session / I'm coming"}
             </button>
         </div>
     )

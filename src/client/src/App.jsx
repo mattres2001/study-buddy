@@ -20,6 +20,7 @@ import Notification from './components/Notification'
 import toast from 'react-hot-toast'
 import GroupProfile from './pages/GroupProfile'
 import CreateGroup from './pages/CreateGroup'
+import Dashboard from './pages/Dashboard'
 
 const App = () => {
   const { user } = useUser()
@@ -77,7 +78,7 @@ const App = () => {
       <Toaster />
       <Routes>
         <Route path='/' element={ !user ? <Login/> : <Layout/>}>
-          <Route index element={<Feed/>}/>
+          <Route index element={<Dashboard/>}/>
           <Route path='messages' element={<Messages/>}/>
           <Route path='messages/:userId' element={<ChatBox/>}/>
           <Route path='connections' element={<Connections/>}/>

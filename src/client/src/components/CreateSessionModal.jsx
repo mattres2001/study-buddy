@@ -7,7 +7,7 @@ import toast from 'react-hot-toast'
 const CreateSessionModal = ({ group, groups = [], setShowModal, onCreated }) => {
 
     const { userId, getToken } = useAuth()
-
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false)
     const [editForm, setEditForm] = useState({
         title: '',
         groupId: group?._id || '',
@@ -16,8 +16,15 @@ const CreateSessionModal = ({ group, groups = [], setShowModal, onCreated }) => 
         location: '',
         description: '',
         max_participants: 4,
-        duration_hours: 1
+        duration_hours: 1,
+        vibe: ''
     })
+
+    const EMOJIS = [
+        "📚", "🧠", "🔥", "😤", "✨",
+        "🎯", "💻", "📝", "😌", "🚀",
+        "⏳", "📖", "💡", "⚡", "🏆"
+    ]
 
     const handleSave = async (e) => {
         e.preventDefault();
@@ -77,18 +84,69 @@ const CreateSessionModal = ({ group, groups = [], setShowModal, onCreated }) => 
                                 Session vibe (optional)
                             </label>
 
-                            <input
-                                type="text"
-                                placeholder="e.g. focused grind, chill study, exam prep..."
-                                value={editForm.vibe || ""}
-                                onChange={(e) =>
-                                    setEditForm(prev => ({
-                                        ...prev,
-                                        vibe: e.target.value
-                                    }))
-                                }
-                                className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-md text-sm"
-                            />
+                            <div className="mt-1 flex gap-2 items-center">
+
+                                {/* Emoji button */}
+                                <div className="relative">
+
+                                    {/* Emoji trigger */}
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowEmojiPicker(prev => !prev)}
+                                        className="px-3 py-2 border border-gray-200 rounded-md text-sm hover:bg-gray-50 transition"
+                                    >
+                                        {editForm.vibe?.emoji || "😊"}
+                                    </button>
+
+                                    {/* Dropdown */}
+                                    {showEmojiPicker && (
+                                        <div className="absolute z-50 mt-2 w-56 p-3 bg-white border border-gray-200 rounded-lg shadow-lg">
+                                            
+                                            <div className="grid grid-cols-4 gap-2 max-h-40 overflow-y-auto">
+
+                                                {EMOJIS.map((emoji) => (
+                                                    <button
+                                                        key={emoji}
+                                                        type="button"
+                                                        onClick={() => {
+                                                            setEditForm(prev => ({
+                                                                ...prev,
+                                                                vibe: {
+                                                                    ...prev.vibe,
+                                                                    emoji
+                                                                }
+                                                            }))
+                                                            setShowEmojiPicker(false)
+                                                        }}
+                                                        className="text-2xl p-2 rounded-md hover:bg-gray-100 hover:scale-110 transition flex items-center justify-center"
+                                                    >
+                                                        {emoji}
+                                                    </button>
+                                                ))}
+
+                                            </div>
+
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Text input */}
+                                <input
+                                    type="text"
+                                    placeholder="e.g. focused grind, chill study, exam prep..."
+                                    value={editForm.vibe?.text || ""}
+                                    onChange={(e) =>
+                                        setEditForm(prev => ({
+                                            ...prev,
+                                            vibe: {
+                                                ...prev.vibe,
+                                                text: e.target.value
+                                            }
+                                        }))
+                                    }
+                                    className="flex-1 px-3 py-2 border border-gray-200 rounded-md text-sm"
+                                />
+                            </div>
                         </div>
 
                         {/* Session Duration */}

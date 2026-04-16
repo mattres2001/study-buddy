@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import MemberInviteModal from './MemberInviteModal'
 
 const GroupMemberList = ({ group }) => {
 
     const navigate = useNavigate()
+    const [showInvite, setShowInvite] = useState(false)
 
     if (!group?.members || group.members.length === 0) {
         return (
@@ -17,9 +19,18 @@ const GroupMemberList = ({ group }) => {
     return (
         <div className="bg-white rounded-lg shadow p-4 w-1/2">
             {/* Header */}
-            <h2 className="text-lg font-semibold mb-3">
-                Group Members ({group.members.length})
-            </h2>
+            <div className="flex items-center mb-3">
+                <h2 className="text-lg font-semibold">
+                    Group Members ({group.members.length})
+                </h2>
+
+                <button
+                    onClick={() => setShowInvite(true)}
+                    className="ml-auto px-3 py-1.5 text-sm bg-indigo-500 text-white rounded-lg hover:bg-indigo-600"
+                >
+                    Invite
+                </button>
+            </div>
 
             {/* Vertical member list */}
             <div className="flex flex-col space-y-2 max-h-[80vh] overflow-y-auto">
@@ -54,6 +65,14 @@ const GroupMemberList = ({ group }) => {
                 </div>
                 ))}
             </div>
+
+            {showInvite && (
+                <MemberInviteModal
+                    group={group}
+                    onClose={() => setShowInvite(false)}
+                />
+            )}
+
         </div>
     )
 }

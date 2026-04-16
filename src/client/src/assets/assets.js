@@ -16,10 +16,10 @@ export const assets = {
 }
 
 export const menuItemsData = [
-    { to: '/', label: 'Feed', Icon: Home },
+    { to: '/', label: 'Dashboard', Icon: Home },
     // { to: '/create-group', label: 'Study Groups', Icon: Users },
     { to: '/messages', label: 'Messages', Icon: MessageCircle },
-    // { to: '/connections', label: 'Connections', Icon: UserPlus },
+    { to: '/connections', label: 'Connections', Icon: UserPlus },
     { to: '/discover', label: 'Discover', Icon: Search },
     { to: '/profile', label: 'Profile', Icon: UserIcon },
 ];

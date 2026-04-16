@@ -94,13 +94,14 @@ const GroupProfile = () => {
                 isAdmin={isAdmin}
                 sessions={sessions}
                 setSessions={setSessions}
+                showGroupInfo={true}
             />
         </div>
 
         {/* 🔹 Main Content */}
         <div className="flex gap-4 px-4 mt-6">
             {group && <GroupMemberList group={group} className="w-1/2" />}
-            {group && <GroupEvents group={group} className="w-1/2" />}
+            {group && <GroupEvents group={group} className="w-1/2"/>}
             {group && <GroupSessions
                 group={group}
                 sessions={sessions}
