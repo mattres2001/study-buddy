@@ -1,7 +1,25 @@
+/*******************************************************************************
+ * File:        GroupBar.jsx
+ * Description: Sidebar panel that lists the user's groups as selectable items
+ *              using GroupBarItem, reading group data from the Redux store.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React from 'react'
 import { useSelector } from 'react-redux'
 import GroupBarItem from './GroupBarItem'
 
+/*******************************************************************************
+ * Function:    GroupBar
+ * Description: Renders a collapsible list of the user's groups in the sidebar.
+ * Input:       sidebarOpen (boolean) - whether the sidebar is expanded
+ *              setSidebarOpen (function) - toggles sidebar state
+ * Output:      Rendered group list panel
+ * Return:      JSX.Element
+ ******************************************************************************/
 const GroupBar = ({sidebarOpen, setSidebarOpen}) => {
     
     const user = useSelector((state) => state.user.value)

@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * File:        Event.js
+ * Description: Mongoose schema and model definition for the Event document,
+ *              extending BaseSchedule to represent group events with RSVP and
+ *              visibility settings.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import mongoose from 'mongoose'
 import baseScheduleSchema from './BaseSchedule.js'
 

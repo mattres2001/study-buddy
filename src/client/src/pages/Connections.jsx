@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        Connections.jsx
+ * Description: Connections management page displaying connections, followers,
+ *              following, and pending requests with accept/follow controls.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React, { useEffect, useState } from 'react'
 import { Users, UserPlus, UserCheck, UserRoundPen, MessageSquare} from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
@@ -13,6 +23,15 @@ import { fetchConnections } from '../features/connections/connectionsSlice'
 import api from '../api/axios'
 import toast from 'react-hot-toast'
 
+/*******************************************************************************
+ * Function:    Connections
+ * Description: Displays the authenticated user's connections, followers,
+ *              following list, and pending connection requests from Redux state,
+ *              with controls to accept requests and follow users.
+ * Input:       None (reads connection state from Redux store)
+ * Output:      Rendered connections page with tabbed user lists
+ * Return:      JSX.Element
+ ******************************************************************************/
 const Connections = () => {
     
     const [ currentTab, setCurrentTab ] = useState('Followers')

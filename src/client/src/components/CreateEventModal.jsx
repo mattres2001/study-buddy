@@ -245,6 +245,16 @@
 // export default CreateEventModal
 
 
+/*******************************************************************************
+ * File:        CreateEventModal.jsx
+ * Description: Modal component for creating a new group event, including
+ *              image upload, form validation, and API submission.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import { useState } from 'react'
 import { useAuth } from '@clerk/clerk-react'
 import { assets } from '../assets/assets'
@@ -253,6 +263,17 @@ import ActivityForm from './ActivityForm'
 import api from '../api/axios'
 import toast from 'react-hot-toast'
 
+/*******************************************************************************
+ * Function:    CreateEventModal
+ * Description: Renders a modal dialog with a form for creating a group event.
+ *              Handles flyer image upload preview and submits to the API.
+ * Input:       group (object) - group the event belongs to
+ *              groups (array) - list of groups for selection
+ *              setShowModal (function) - controls modal visibility
+ *              onCreated (function) - callback invoked after successful creation
+ * Output:      New event created via API; modal closed on success
+ * Return:      JSX.Element
+ ******************************************************************************/
 const CreateEventModal = ({ group, groups = [], setShowModal, onCreated }) => {
 
     const { getToken } = useAuth()

@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        eventRoutes.js
+ * Description: Express router defining all /api/event endpoints for creating,
+ *              retrieving, updating, and deleting group events.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import express from 'express';
 import { 
     createEvent,

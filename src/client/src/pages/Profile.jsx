@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * File:        Profile.jsx
+ * Description: User profile page displaying profile info, posts, and group
+ *              memberships for the authenticated user or a viewed user by
+ *              profileId from the URL params.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { dummyUserData, dummyPostsData } from '../assets/assets'
@@ -13,6 +24,15 @@ import toast from 'react-hot-toast'
 import { useSelector } from 'react-redux'
 import GroupBarItem from '../components/GroupBarItem'
 
+/*******************************************************************************
+ * Function:    Profile
+ * Description: Renders a user profile page with cover photo, profile info,
+ *              post grid, and group list. Loads the authenticated user's own
+ *              profile or a visited user's profile based on the profileId param.
+ * Input:       None (reads profileId from URL params and auth from Clerk)
+ * Output:      Rendered user profile page with posts and groups
+ * Return:      JSX.Element
+ ******************************************************************************/
 const Profile = () => {
 
     const currentUser = useSelector((state) => state.user.value)

@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        groupController.js
+ * Description: Express controller handling group creation, retrieval, updates,
+ *              deletion, and member management for study groups.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import mongoose from 'mongoose';
 import Group from "../models/Group.js";
 import User from "../models/User.js";
@@ -8,7 +18,17 @@ import fs from 'fs';
 
 
 
-//create group and make creator admin
+/*******************************************************************************
+ * Function:    createGroup
+ * Description: Creates a new study group with the authenticated user as the
+ *              initial admin and member. Optionally uploads a group picture and
+ *              cover photo to ImageKit, then links the group to the user's profile.
+ * Input:       req (Express Request) - body: { name, description, location };
+ *                  files: { group_picture, cover_photo }
+ *              res (Express Response)
+ * Output:      New Group document saved; user's groups array updated
+ * Return:      { success: boolean, group: Group, message: string }
+ ******************************************************************************/
 export const createGroup = async (req, res) => {
     console.log("AUTH OBJECT:", req.auth);
     try {
@@ -107,6 +127,15 @@ export const createGroup = async (req, res) => {
 }
 
 
+/*******************************************************************************
+ * Function:    getGroupData
+ * Description: Retrieves a group's data by ID, including populated member
+ *              profile information.
+ * Input:       req (Express Request) - params: { groupId: string }
+ *              res (Express Response)
+ * Output:      JSON response with group document and member details
+ * Return:      { success: boolean, group: Group }
+ ******************************************************************************/
 export const getGroupData = async (req, res) => {
 
     //make sure to find the correct group by its ID.
@@ -130,22 +159,61 @@ export const getGroupData = async (req, res) => {
     
 }
 
+/*******************************************************************************
+ * Function:    updateGroup
+ * Description: Updates an existing group's data (not yet implemented).
+ * Input:       req (Express Request), res (Express Response)
+ * Output:      Updated Group document
+ * Return:      { success: boolean, group: Group, message: string }
+ ******************************************************************************/
 export const updateGroup = async (req, res) => {
-    
+
 }
 
+/*******************************************************************************
+ * Function:    deleteGroup
+ * Description: Deletes a group by ID (not yet implemented).
+ * Input:       req (Express Request), res (Express Response)
+ * Output:      Group document removed from database
+ * Return:      { success: boolean, message: string }
+ ******************************************************************************/
 export const deleteGroup = async (req, res) => {
-    
+
 }
 
+/*******************************************************************************
+ * Function:    addGroupMember
+ * Description: Adds a user to an existing group's members list (not yet
+ *              implemented).
+ * Input:       req (Express Request), res (Express Response)
+ * Output:      Updated Group document with new member
+ * Return:      { success: boolean, message: string }
+ ******************************************************************************/
 export const addGroupMember = async (req, res) => {
-    
+
 }
 
+/*******************************************************************************
+ * Function:    removeMember
+ * Description: Removes a user from an existing group's members list (not yet
+ *              implemented).
+ * Input:       req (Express Request), res (Express Response)
+ * Output:      Updated Group document with member removed
+ * Return:      { success: boolean, message: string }
+ ******************************************************************************/
 export const removeMember = async (req, res) => {
-    
+
 }
 
+/*******************************************************************************
+ * Function:    getMyGroups
+ * Description: Retrieves all groups the authenticated user belongs to (not yet
+ *              implemented).
+ * Input:       req (Express Request) - authenticated request with Clerk userId
+ *              res (Express Response)
+ * Output:      JSON response with list of user's groups
+ * Return:      { success: boolean, groups: Group[] }
+ ******************************************************************************/
 export const getMyGroups = async (req, res) => {
-    
+
 }

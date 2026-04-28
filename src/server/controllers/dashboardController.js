@@ -1,8 +1,28 @@
+/*******************************************************************************
+ * File:        dashboardController.js
+ * Description: Express controller that aggregates groups, sessions, and
+ *              upcoming events for the authenticated user's dashboard view.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import Group from '../models/Group.js'
 import Session from '../models/Session.js'
 import User from '../models/User.js'
 import Event from '../models/Event.js'
 
+/*******************************************************************************
+ * Function:    getDashboardData
+ * Description: Aggregates and returns the authenticated user's groups, all
+ *              sessions belonging to those groups, and upcoming events.
+ * Input:       req (Express Request) - authenticated request with Clerk userId
+ *              res (Express Response)
+ * Output:      JSON response with groups, sessions, and upcoming events
+ * Return:      { success: boolean, groups: Group[], sessions: Session[],
+ *               events: Event[] }
+ ******************************************************************************/
 export const getDashboardData = async (req, res) => {
     try {
         const { userId } = req.auth()

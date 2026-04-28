@@ -1,6 +1,28 @@
+/*******************************************************************************
+ * File:        sessionController.js
+ * Description: Express controller handling study session lifecycle: creation,
+ *              joining, ending, vibe updates, description edits, and retrieval
+ *              of current and upcoming group sessions.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import mongoose from 'mongoose';
 import Session from '../models/Session.js'
 
+/*******************************************************************************
+ * Function:    startSession
+ * Description: Creates a new study session for a group, calculating the end
+ *              time from the given duration in hours.
+ * Input:       req (Express Request) - body: { groupId, title, participants,
+ *                  location, description, started_at, ended_at,
+ *                  max_participants, duration_hours, vibe }
+ *              res (Express Response)
+ * Output:      New Session document saved to the database
+ * Return:      { success: boolean, session: Session, message: string }
+ ******************************************************************************/
 export const startSession = async (req, res) => {
     try {
 
@@ -48,6 +70,14 @@ export const startSession = async (req, res) => {
     }
 }   
 
+/*******************************************************************************
+ * Function:    updateSessionVibe
+ * Description: Updates the vibe (text and emoji) of an existing session.
+ * Input:       req (Express Request) - params: { sessionId }; body: { text, emoji }
+ *              res (Express Response)
+ * Output:      Updated Session document
+ * Return:      { success: boolean, session: Session }
+ ******************************************************************************/
 export const updateSessionVibe = async (req, res) => {
     try {
         const { sessionId } = req.params
@@ -97,6 +127,15 @@ export const updateSessionVibe = async (req, res) => {
 //     }
 // }
 
+/*******************************************************************************
+ * Function:    joinSession
+ * Description: Adds the authenticated user to a session's participants list.
+ *              Rejects if the session has ended or the user already joined.
+ * Input:       req (Express Request) - params: { sessionId }
+ *              res (Express Response)
+ * Output:      Updated Session document with new participant
+ * Return:      { success: boolean, message: string, session: Session }
+ ******************************************************************************/
 export const joinSession = async (req, res) => {
     try {
         const { userId } = req.auth()
@@ -133,6 +172,15 @@ export const joinSession = async (req, res) => {
     }
 }
 
+/*******************************************************************************
+ * Function:    endSession
+ * Description: Ends an active session by setting ended_at to the current time.
+ *              Only the session creator is authorized to end it.
+ * Input:       req (Express Request) - params: { sessionId }
+ *              res (Express Response)
+ * Output:      Updated Session document with ended_at timestamp
+ * Return:      { success: boolean, message: string, session: Session }
+ ******************************************************************************/
 export const endSession = async (req, res) => {
     try {
         const { userId } = req.auth()
@@ -171,6 +219,15 @@ export const endSession = async (req, res) => {
     }
 }
 
+/*******************************************************************************
+ * Function:    getGroupSessions
+ * Description: Retrieves all active (not yet ended) sessions for a given group,
+ *              sorted by start time ascending.
+ * Input:       req (Express Request) - params: { groupId: string }
+ *              res (Express Response)
+ * Output:      JSON response with active session list
+ * Return:      { success: boolean, sessions: Session[] }
+ ******************************************************************************/
 export const getGroupSessions = async (req, res) => {
     try {
         const now = new Date();
@@ -195,6 +252,15 @@ export const getGroupSessions = async (req, res) => {
     }
 }
 
+/*******************************************************************************
+ * Function:    getUpcomingGroupSessions
+ * Description: Retrieves sessions for a group that have not yet started,
+ *              sorted by start time ascending.
+ * Input:       req (Express Request) - params: { groupId: string }
+ *              res (Express Response)
+ * Output:      JSON response with upcoming session list
+ * Return:      { success: boolean, sessions: Session[] }
+ ******************************************************************************/
 export const getUpcomingGroupSessions = async (req, res) => {
     try {
         const now = new Date()
@@ -223,6 +289,14 @@ export const getUpcomingGroupSessions = async (req, res) => {
     }
 }
 
+/*******************************************************************************
+ * Function:    updateDescription
+ * Description: Updates the description field of an existing session.
+ * Input:       req (Express Request) - params: { sessionId }; body: { description }
+ *              res (Express Response)
+ * Output:      Updated Session document
+ * Return:      { success: boolean, session: Session }
+ ******************************************************************************/
 export const updateDescription = async (req, res) => {
     try {
         const { sessionId } = req.params

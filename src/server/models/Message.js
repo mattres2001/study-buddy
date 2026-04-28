@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        Message.js
+ * Description: Mongoose schema and model definition for the Message document,
+ *              representing direct messages between two users.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import mongoose from 'mongoose';
 
 const messageSchema = new mongoose.Schema({

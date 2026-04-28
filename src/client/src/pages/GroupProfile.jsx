@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        GroupProfile.jsx
+ * Description: Group profile page displaying group info, member list, active
+ *              sessions, and events fetched by groupId from the URL params.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React, { useState, useEffect } from 'react'
 import GroupMemberList from '../components/GroupMemberList'
 import GroupEvents from '../components/GroupEvents'
@@ -8,6 +18,14 @@ import { useUser, useAuth } from '@clerk/clerk-react'
 import toast from 'react-hot-toast'
 import api from '../api/axios'
 
+/*******************************************************************************
+ * Function:    GroupProfile
+ * Description: Fetches group data by groupId URL param and renders the group
+ *              header, member list, active sessions, and events panels.
+ * Input:       None (reads groupId from URL params and auth from Clerk)
+ * Output:      Rendered group profile page with member and activity sections
+ * Return:      JSX.Element
+ ******************************************************************************/
 const GroupProfile = () => {
 
     const { userId, getToken } = useAuth()

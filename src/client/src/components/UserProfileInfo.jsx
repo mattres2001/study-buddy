@@ -1,7 +1,29 @@
+/*******************************************************************************
+ * File:        UserProfileInfo.jsx
+ * Description: Profile info panel displaying a user's bio, location, join date,
+ *              post count, followers/following counts, and an edit button for
+ *              the authenticated user's own profile.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import { Calendar, MapPin, PenBox, Verified } from 'lucide-react'
 import React from 'react'
 import moment from 'moment'
 
+/*******************************************************************************
+ * Function:    UserProfileInfo
+ * Description: Renders the profile information section with cover photo, avatar,
+ *              name, bio, stats, and an optional edit button.
+ * Input:       user (object) - user profile data
+ *              posts (array) - user's posts for post count display
+ *              profileId (string) - ID of the profile being viewed
+ *              setShowEdit (function) - opens the ProfileModal for editing
+ * Output:      Rendered profile info panel
+ * Return:      JSX.Element
+ ******************************************************************************/
 const UserProfileInfo = ({ user, posts, profileId, setShowEdit }) => {
     return (
         <div className='relative py-4 px-6 md:px-8 bg-white'>

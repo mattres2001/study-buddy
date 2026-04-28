@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * File:        BaseSchedule.js
+ * Description: Shared Mongoose sub-schema for scheduled items (sessions and
+ *              events), providing common fields like title, group, timing, and
+ *              location.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import mongoose from 'mongoose'
 
 const baseScheduleSchema = new mongoose.Schema({

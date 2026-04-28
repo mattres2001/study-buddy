@@ -1,4 +1,14 @@
-import React, { useState, useEffect } from 'react'
+/*******************************************************************************
+ * File:        Discover.jsx
+ * Description: User discovery page with a search bar for finding users by name,
+ *              username, email, or location, and a recommended users section.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
+import React, { useState, useEffect, useCallback } from 'react'
 import { dummyConnectionsData } from '../assets/assets'
 import { Search } from 'lucide-react'
 import UserCard from '../components/UserCard'
@@ -9,37 +19,76 @@ import { fetchUser } from '../features/user/userSlice'
 import toast from 'react-hot-toast'
 import api from '../api/axios'
 
+/*******************************************************************************
+ * Function:    Discover
+ * Description: Renders a user search page and a recommended users section.
+ *              Debounces the search input and fetches results from the API.
+ * Input:       None (reads auth from Clerk; fetches data from the API)
+ * Output:      Rendered user search results and recommendation cards
+ * Return:      JSX.Element
+ ******************************************************************************/
 const Discover = () => {
     
     const dispatch = useDispatch()
     const [ input, setInput ] = useState('')
     const [ users, setUsers ] = useState([])
     const [ loading, setLoading ] = useState(false)
+    const [recommendedUsers, setRecommendedUsers] = useState([])
+    const [recLoading, setRecLoading] = useState(false)
     const { getToken } = useAuth()
 
-    const handleSearch = async (e) => {
-        if (e.key === 'Enter') {
+    useEffect(() => {
+        const fetchRecommendations = async () => {
             try {
-                setUsers([])
-                setLoading(true)
-                const { data } = await api.post('/api/user/discover', { input }, {
-                    headers: { Authorization: `Bearer ${await getToken()}`}
+                setRecLoading(true)
+                const token = await getToken()
+
+                const { data } = await api.get('/api/user/recommendations', {
+                    headers: { Authorization: `Bearer ${token}` }
                 })
-                data.success ? setUsers(data.users) : toast.error(data.message)
-                setLoading(false)
-                setInput('')
+
+                if (data.success) {
+                    setRecommendedUsers(data.recommendations)
+                } else {
+                    toast.error(data.message)
+                }
+
             } catch (error) {
                 toast.error(error.message)
-            }
+            } finally {
+                setRecLoading(false)
+        }
+    }
+
+    fetchRecommendations()
+    }, [getToken])
+
+    const handleSearch = useCallback(async (value) => {
+        if (!value.trim()) {
+            setUsers([])
+            return
+        }
+        try {
+            setUsers([])
+            setLoading(true)
+            const { data } = await api.post('/api/user/discover', { input: value }, {
+                headers: { Authorization: `Bearer ${await getToken()}` }
+            })
+            data.success ? setUsers(data.users) : toast.error(data.message)
+        } catch (error) {
+            toast.error(error.message)
+        } finally {
             setLoading(false)
         }
-    }  
+    }, [getToken])
 
+    // Add this debounce effect
     useEffect(() => {
-        getToken().then((token) => {
-            dispatch(fetchUser(token))
-        })
-    }, [])
+        const timer = setTimeout(() => {
+            handleSearch(input)
+        }, 400)
+        return () => clearTimeout(timer)
+    }, [input, handleSearch])
 
     return (
         <div className='min-h-screen bg-gradient-to-b from-slate-50 to-white'>
@@ -56,10 +105,40 @@ const Discover = () => {
                     <div className='p-6'>
                         <div className='relative'>
                             <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5'/>
-                            <input type="text" placeholder='Search people by name, username, bio, or location...' className='pl-10 sm:pl-12 py-2 w-full border border-gray-300 rounded-md max-sm:text-sm' onChange={(e) => setInput(e.target.value)} value={input} onKeyUp={handleSearch}/>
+                            <input
+                                type="text"
+                                placeholder='Search people by name, username, bio, or location...'
+                                className='pl-10 sm:pl-12 py-2 w-full border border-gray-300 rounded-md max-sm:text-sm'
+                                onChange={(e) => setInput(e.target.value)}
+                                value={input}
+                            />
                         </div>
                     </div>
                 </div>
+
+                {!input && (
+                <div className='mb-10'>
+                    <h2 className='text-xl font-semibold text-slate-800 mb-4'>
+                    Recommended for You
+                    </h2>
+
+                    {recLoading ? (
+                    <Loading height='200px' />
+                    ) : (
+                    <div className='flex flex-wrap gap-6'>
+                        {recommendedUsers.map((userObj) => (
+                            <UserCard 
+                                user={userObj.user} 
+                                key={userObj.user._id} 
+                                sharedCourses={userObj.sharedCourses}
+                                sharedSubjects={userObj.sharedSubjects}
+                                mutualConnectionsCount={userObj.mutualConnectionsCount}
+                            />
+                        ))}
+                    </div>
+                    )}
+                </div>
+                )}
 
                 <div className='flex flex-wrap gap-6'>
                     {users.map((user) => (

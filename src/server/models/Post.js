@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        Post.js
+ * Description: Mongoose schema and model definition for the Post document,
+ *              supporting text, image, and combined post types with like tracking.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import mongoose from 'mongoose';
 
 const postSchema = new mongoose.Schema({

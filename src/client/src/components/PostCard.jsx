@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        PostCard.jsx
+ * Description: Card component for displaying a single post with author info,
+ *              content, images, like/unlike toggle, and share functionality.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import { BadgeCheck, Heart, MessageCircle, Share2 } from 'lucide-react'
 import React, { useState } from 'react'
 import moment from 'moment'
@@ -10,6 +20,14 @@ import toast from 'react-hot-toast'
 import ShareModal from './ShareModal'
 import PostModal from './PostModal'
 
+/*******************************************************************************
+ * Function:    PostCard
+ * Description: Renders a single post with author avatar, content, images,
+ *              like toggle, comment icon, and share modal trigger.
+ * Input:       post (object) - post data including user, content, images, likes
+ * Output:      Rendered post card with interactive controls
+ * Return:      JSX.Element
+ ******************************************************************************/
 const PostCard = ({
     post,
     variant = "feed"

@@ -1,6 +1,25 @@
+/*******************************************************************************
+ * File:        StoryViewer.jsx
+ * Description: Full-screen story viewer component that cycles through a user's
+ *              stories (text, image, video) with auto-advance and close controls.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import { BadgeCheck, X } from 'lucide-react'
 import React, { useState, useEffect } from 'react'
 
+/*******************************************************************************
+ * Function:    StoryViewer
+ * Description: Renders a full-screen overlay cycling through all stories for
+ *              a selected user, with a progress timer and close button.
+ * Input:       viewStory (object) - user story data to display
+ *              setViewStory (function) - clears the viewer when closed
+ * Output:      Rendered story viewer overlay
+ * Return:      JSX.Element
+ ******************************************************************************/
 const StoryViewer = ({viewStory, setViewStory}) => {
 
     const [progress, setProgress] = useState(0)

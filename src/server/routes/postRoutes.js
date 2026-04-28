@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        postRoutes.js
+ * Description: Express router defining all /api/post endpoints for creating
+ *              posts, retrieving the feed, viewing a single post, and liking.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import express from 'express';
 import { upload } from '../configs/multer.js';
 import { protect } from '../middleware/auth.js';

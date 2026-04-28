@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        Story.js
+ * Description: Mongoose schema and model definition for the Story document,
+ *              representing ephemeral user stories with media and view tracking.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import mongoose from 'mongoose';
 
 const storySchema = new mongoose.Schema({

@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        Session.js
+ * Description: Mongoose schema and model definition for the Session document,
+ *              extending BaseSchedule to represent live group study sessions.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import mongoose from 'mongoose';
 import baseScheduleSchema from './BaseSchedule.js'
 

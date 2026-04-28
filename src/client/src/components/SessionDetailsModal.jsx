@@ -1,8 +1,29 @@
+/*******************************************************************************
+ * File:        SessionDetailsModal.jsx
+ * Description: Modal component displaying full details of a study session
+ *              with options to join, end, or update the session vibe.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React from 'react'
 import toast from 'react-hot-toast'
 import { useAuth } from '@clerk/clerk-react'
 import api from '../api/axios.js'
 
+/*******************************************************************************
+ * Function:    SessionDetailsModal
+ * Description: Renders a modal with full session details and controls for
+ *              joining, ending, and updating the vibe of a study session.
+ * Input:       session (object) - session data to display
+ *              setSessions (function) - updates the session list in the parent
+ *              setShowModal (function) - controls modal visibility
+ *              isAdmin (boolean) - whether the current user can end the session
+ * Output:      Session joined or ended via API; modal state updated
+ * Return:      JSX.Element
+ ******************************************************************************/
 const SessionDetailsModal = ({ session, setSessions, setShowModal, isAdmin }) => {
 
     const { getToken } = useAuth()

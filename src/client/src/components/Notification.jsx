@@ -1,6 +1,25 @@
+/*******************************************************************************
+ * File:        Notification.jsx
+ * Description: Toast notification component displayed when a new message
+ *              arrives while the user is not in the active chat view.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 
+/*******************************************************************************
+ * Function:    Notification
+ * Description: Renders a toast banner showing the sender's name and message
+ *              preview; clicking it navigates to that user's chat.
+ * Input:       t (Toast object) - react-hot-toast instance for dismissal
+ *              message (object) - incoming message with from_user_id populated
+ * Output:      Rendered notification toast
+ * Return:      JSX.Element
+ ******************************************************************************/
 const Notification = ({ t, message }) => {
     
     const navigate = useNavigate()

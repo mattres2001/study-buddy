@@ -1,8 +1,26 @@
+/*******************************************************************************
+ * File:        Login.jsx
+ * Description: Authentication landing page showing the app logo, tagline, and
+ *              Clerk sign-in/sign-up buttons.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React from 'react'
 import { assets } from '../assets/assets'
 import { Star } from 'lucide-react'
 import { SignIn } from '@clerk/clerk-react'
 
+/*******************************************************************************
+ * Function:    Login
+ * Description: Renders the unauthenticated landing page with the app logo,
+ *              tagline, and Clerk SignIn/SignUp buttons.
+ * Input:       None
+ * Output:      Rendered login/signup landing page
+ * Return:      JSX.Element
+ ******************************************************************************/
 const Login = () => {
     return (
         <div className='min-h-screen flex flex-col md:flex-row'>

@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * File:        App.jsx
+ * Description: Root React component that defines all client-side routes, manages
+ *              the global SSE connection for real-time messages, and dispatches
+ *              initial data fetches on user authentication.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React, { useEffect, useRef } from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import Login from './pages/Login'
@@ -22,6 +33,14 @@ import GroupProfile from './pages/GroupProfile'
 import CreateGroup from './pages/CreateGroup'
 import Dashboard from './pages/Dashboard'
 
+/*******************************************************************************
+ * Function:    App
+ * Description: Root component. Opens an SSE stream for incoming messages, fetches
+ *              user and connection data on login, and renders the route tree.
+ * Input:       None (reads user state from Clerk and Redux)
+ * Output:      Rendered route tree with Toaster notifications
+ * Return:      JSX.Element
+ ******************************************************************************/
 const App = () => {
   const { user } = useUser()
   const { getToken } = useAuth()
@@ -31,10 +50,10 @@ const App = () => {
   const dispatch = useDispatch()
 
   // ONLY FOR BACKEND TESTING PURPOSES
-  // useEffect(() => {
-  //   if (user)
-  //     getToken().then((token) => console.log(token))
-  // })
+  useEffect(() => {
+    if (user)
+      getToken().then((token) => console.log(token))
+  })
   //----------------------------------
 
   useEffect(() => {

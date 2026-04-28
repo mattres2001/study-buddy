@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * File:        index.js
+ * Description: Defines and exports all Inngest background job functions,
+ *              including Clerk user sync webhooks, connection request reminders,
+ *              story expiration, and daily unseen message notifications.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import { Inngest } from "inngest";
 import User from '../models/User.js'
 import Connection from '../models/Connection.js'
@@ -8,7 +19,15 @@ import Message from '../models/Message.js'
 // Create a client to send and receive events
 export const inngest = new Inngest({ id: "study-buddy-csun" });
 
-// Inngest function to save user data to database
+/*******************************************************************************
+ * Function:    syncUserCreation
+ * Description: Inngest event handler that fires on clerk/user.created. Creates
+ *              a new User document in MongoDB from the Clerk user payload,
+ *              auto-resolving username conflicts.
+ * Input:       event (Inngest Event) - contains Clerk user data in event.data
+ * Output:      New User document inserted into the database
+ * Return:      void
+ ******************************************************************************/
 const syncUserCreation = inngest.createFunction(
     { id: 'sync-user-from-clerk' },
     { event: 'clerk/user.created' },
@@ -22,6 +41,9 @@ const syncUserCreation = inngest.createFunction(
         } = event.data;
         let username = email_addresses[0].email_address.split('@')[0];
 
+        const courses = [];
+        const subjects = [];
+
         // Check availability of username
         const user = await User.findOne({username});
 
@@ -34,13 +56,22 @@ const syncUserCreation = inngest.createFunction(
             email: email_addresses[0].email_address,
             full_name: first_name + " " + last_name,
             profile_picture: image_url, 
-            username
+            username,
+            courses,
+            subjects
         }
         await User.create(userData);
     }
 );
 
-// Inngest function to update user data to database
+/*******************************************************************************
+ * Function:    syncUserUpdation
+ * Description: Inngest event handler that fires on clerk/user.updated. Updates
+ *              the matching User document in MongoDB with the latest Clerk data.
+ * Input:       event (Inngest Event) - contains updated Clerk user data
+ * Output:      User document updated in the database
+ * Return:      void
+ ******************************************************************************/
 const syncUserUpdation = inngest.createFunction(
     { id: 'update-user-from-clerk' },
     { event: 'clerk/user.updated' },
@@ -64,7 +95,14 @@ const syncUserUpdation = inngest.createFunction(
     }
 );
 
-// Inngest function to delete user data to database
+/*******************************************************************************
+ * Function:    syncUserDeletion
+ * Description: Inngest event handler that fires on clerk/user.deleted. Removes
+ *              the corresponding User document from MongoDB.
+ * Input:       event (Inngest Event) - contains the deleted user's id
+ * Output:      User document deleted from the database
+ * Return:      void
+ ******************************************************************************/
 const syncUserDeletion = inngest.createFunction(
     { id: 'delete-user-with-clerk' },
     { event: 'clerk/user.deleted' },
@@ -75,7 +113,16 @@ const syncUserDeletion = inngest.createFunction(
     }
 );
 
-// Inngest function to send Reminder when a new connection request is added
+/*******************************************************************************
+ * Function:    sendNewConnectionRequestReminder
+ * Description: Inngest event handler that fires on app/connection-request.
+ *              Sends an immediate email notification to the recipient, then
+ *              waits 24 hours and sends a follow-up reminder if still pending.
+ * Input:       event (Inngest Event) - contains connectionId in event.data
+ *              step   (Inngest Step)  - used for multi-step orchestration
+ * Output:      One or two emails sent to the connection request recipient
+ * Return:      void
+ ******************************************************************************/
 const sendNewConnectionRequestReminder = inngest.createFunction(
     { id: "send-new-connection-request-reminder" },
     { event: "app/connection-request" },
@@ -131,7 +178,15 @@ const sendNewConnectionRequestReminder = inngest.createFunction(
     }
 );
 
-// Inngest function to delete story after 24 hours
+/*******************************************************************************
+ * Function:    deleteStory
+ * Description: Inngest event handler that fires on app/story.delete. Waits 24
+ *              hours then permanently deletes the specified Story document.
+ * Input:       event (Inngest Event) - contains storyId in event.data
+ *              step   (Inngest Step)  - used for delayed step execution
+ * Output:      Story document deleted from the database after 24 hours
+ * Return:      { message: string }
+ ******************************************************************************/
 const deleteStory = inngest.createFunction(
     { id: 'story-delete' },
     { event: 'app/story.delete' },
@@ -146,6 +201,14 @@ const deleteStory = inngest.createFunction(
     }
 )
 
+/*******************************************************************************
+ * Function:    sendNotificationOfUnseenMessages
+ * Description: Inngest cron job that runs daily at 9 AM ET. Aggregates unseen
+ *              messages per recipient and sends each a summary email.
+ * Input:       step (Inngest Step) - used for step-based execution
+ * Output:      One email per user with unseen messages
+ * Return:      { message: string }
+ ******************************************************************************/
 const sendNotificationOfUnseenMessages = inngest.createFunction(
     { id: 'send-unseen-messages-notification' },
     { cron: 'TZ=America/New_York 0 9 * * *' }, // Everyday 9 AM

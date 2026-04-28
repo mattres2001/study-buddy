@@ -1,7 +1,25 @@
+/*******************************************************************************
+ * File:        GroupMemberList.jsx
+ * Description: Component that renders the list of members in a group with
+ *              links to their profiles and an invite member option.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import MemberInviteModal from './MemberInviteModal'
 
+/*******************************************************************************
+ * Function:    GroupMemberList
+ * Description: Renders a scrollable list of group member avatars and names,
+ *              with a button to open the MemberInviteModal.
+ * Input:       group (object) - group data including populated members array
+ * Output:      Rendered member list with invite controls
+ * Return:      JSX.Element
+ ******************************************************************************/
 const GroupMemberList = ({ group }) => {
 
     const navigate = useNavigate()

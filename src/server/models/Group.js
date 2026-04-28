@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        Group.js
+ * Description: Mongoose schema and model definition for the Group document,
+ *              representing study groups with members, admins, and metadata.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import mongoose from 'mongoose';
 
 const groupSchema = new mongoose.Schema({

@@ -1,6 +1,28 @@
+/*******************************************************************************
+ * File:        ActivityForm.jsx
+ * Description: Reusable form component for creating or editing a scheduled
+ *              activity (session or event), with group selection via GroupBarItem.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React from 'react'
 import GroupBarItem from './GroupBarItem'
 
+/*******************************************************************************
+ * Function:    ActivityForm
+ * Description: Renders a controlled form for activity fields (title, dates,
+ *              location, description) and a group selector.
+ * Input:       editForm (object) - current form state
+ *              setEditForm (function) - form state updater
+ *              group (object) - currently selected group
+ *              groups (array) - list of available groups
+ *              type (string) - 'session' or 'event'
+ * Output:      Rendered form UI
+ * Return:      JSX.Element
+ ******************************************************************************/
 const ActivityForm = ({ editForm, setEditForm, group, groups, type }) => {
     
     return (

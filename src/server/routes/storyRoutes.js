@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        storyRoutes.js
+ * Description: Express router defining all /api/story endpoints for creating
+ *              and retrieving user stories.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import express from 'express';
 import { upload } from '../configs/multer.js';
 import { protect } from '../middleware/auth.js';

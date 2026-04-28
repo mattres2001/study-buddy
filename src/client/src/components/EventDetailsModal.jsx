@@ -1,7 +1,29 @@
+/*******************************************************************************
+ * File:        EventDetailsModal.jsx
+ * Description: Modal component that displays full event details and allows
+ *              admins to edit or delete the event.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '@clerk/clerk-react'
 import api from '../api/axios'
 
+/*******************************************************************************
+ * Function:    EventDetailsModal
+ * Description: Renders a modal with event information and admin controls for
+ *              updating or deleting the event via the API.
+ * Input:       event (object) - event data to display
+ *              setShowModal (function) - controls modal visibility
+ *              isAdmin (boolean) - whether the current user is a group admin
+ *              setEvents (function) - updates the parent event list
+ *              setSelectedEvent (function) - clears the selected event on delete
+ * Output:      Event updated or deleted via API
+ * Return:      JSX.Element
+ ******************************************************************************/
 const EventDetailsModal = ({ event, setShowModal, isAdmin, setEvents, setSelectedEvent }) => {
     if (!event) return null
 

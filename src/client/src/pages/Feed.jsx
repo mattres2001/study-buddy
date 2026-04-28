@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        Feed.jsx
+ * Description: Social feed page displaying posts from the user's connections
+ *              and followings, with a StoriesBar above the post list.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React, { useEffect, useState } from 'react'
 import { assets, dummyPostsData } from '../assets/assets'
 import Loading from '../components/Loading'
@@ -6,7 +16,16 @@ import PostCard from '../components/PostCard'
 import RecentMessages from '../components/RecentMessages'
 import { useAuth } from '@clerk/clerk-react'
 import api from '../api/axios'
+import toast from 'react-hot-toast'
 
+/*******************************************************************************
+ * Function:    Feed
+ * Description: Fetches and renders the social feed with a StoriesBar and a
+ *              list of PostCards from the user's connections and followings.
+ * Input:       None (reads auth from Clerk; fetches posts from the API)
+ * Output:      Rendered feed page with stories and post list
+ * Return:      JSX.Element
+ ******************************************************************************/
 const Feed = () => {
     
     const [ feeds, setFeeds ] = useState([])

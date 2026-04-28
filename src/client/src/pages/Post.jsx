@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        Post.jsx
+ * Description: Single post detail page that fetches a post by its ID from the
+ *              URL params and renders it in a PostCard.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { dummyPostsData } from '../assets/assets'
@@ -7,6 +17,14 @@ import PostCard from '../components/PostCard'
 import api from '../api/axios'
 import toast from 'react-hot-toast'
 
+/*******************************************************************************
+ * Function:    Post
+ * Description: Fetches a single post by its postId URL param and renders it
+ *              in a PostCard, with a back button to return to the feed.
+ * Input:       None (reads postId from URL params and auth from Clerk)
+ * Output:      Rendered single post detail page
+ * Return:      JSX.Element
+ ******************************************************************************/
 const Post = () => {
 
 

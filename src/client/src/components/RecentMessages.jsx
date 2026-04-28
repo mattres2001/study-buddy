@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        RecentMessages.jsx
+ * Description: Sidebar widget listing the authenticated user's most recent
+ *              message conversations with links to open each chat.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React, { useEffect, useState } from 'react'
 import { dummyRecentMessagesData } from '../assets/assets'
 import { Link } from 'react-router-dom'
@@ -6,6 +16,14 @@ import { useUser, useAuth } from '@clerk/clerk-react'
 import api from '../api/axios'
 import toast from 'react-hot-toast'
 
+/*******************************************************************************
+ * Function:    RecentMessages
+ * Description: Fetches and renders a list of the authenticated user's most
+ *              recent message conversations in the sidebar.
+ * Input:       None (reads user from Clerk and fetches from API)
+ * Output:      Rendered recent message list with links to chat views
+ * Return:      JSX.Element
+ ******************************************************************************/
 const RecentMessages = () => {
     
     const [ messages, setMessages ] = useState([])

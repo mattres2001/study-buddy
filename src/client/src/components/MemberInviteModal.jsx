@@ -1,7 +1,26 @@
+/*******************************************************************************
+ * File:        MemberInviteModal.jsx
+ * Description: Modal component for searching and inviting users to join a
+ *              study group by sending a connection-based invite via the API.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '@clerk/clerk-react'
 import api from '../api/axios'
 
+/*******************************************************************************
+ * Function:    MemberInviteModal
+ * Description: Renders a search interface for finding users by name/username
+ *              and inviting them to the group.
+ * Input:       group (object) - the group to invite members into
+ *              onClose (function) - callback to close the modal
+ * Output:      Invite request sent via API on selection
+ * Return:      JSX.Element
+ ******************************************************************************/
 const MemberInviteModal = ({ group, onClose }) => {
     const { getToken } = useAuth()
     const [email, setEmail] = useState('')

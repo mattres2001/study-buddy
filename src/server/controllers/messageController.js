@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * File:        messageController.js
+ * Description: Express controller handling real-time messaging via Server-Sent
+ *              Events (SSE), message sending, chat history retrieval, and
+ *              recent message summaries.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import fs from 'fs'
 import imagekit from '../configs/imagekit.js'
 import Message from '../models/Message.js'
@@ -5,7 +16,16 @@ import Message from '../models/Message.js'
 // Create an empty object to story SS Event connections
 const connections = {};
 
-// Controller function for the SSE endpoint
+/*******************************************************************************
+ * Function:    sseController
+ * Description: Opens a persistent Server-Sent Events connection for the given
+ *              userId and registers the response object so the server can push
+ *              real-time messages. Cleans up on client disconnect.
+ * Input:       req (Express Request) - params: { userId: string }
+ *              res (Express Response) - kept open as an SSE stream
+ * Output:      Long-lived SSE connection; events pushed on incoming messages
+ * Return:      void
+ ******************************************************************************/
 export const sseController = (req, res) => {
     const { userId } = req.params;
     console.log('New client connected : ', userId);
@@ -30,7 +50,16 @@ export const sseController = (req, res) => {
     })
 }
 
-// Send Message
+/*******************************************************************************
+ * Function:    sendMessage
+ * Description: Saves a new message to the database. Optionally uploads an image
+ *              to ImageKit, then pushes the message to the recipient's SSE
+ *              stream if they are connected.
+ * Input:       req (Express Request) - body: { to_user_id, text }; file: image
+ *              res (Express Response)
+ * Output:      Message saved; SSE event pushed to recipient if online
+ * Return:      { success: boolean, message: Message }
+ ******************************************************************************/
 export const sendMessage = async (req, res) => {
     try {
         console.log('Heree')
@@ -79,7 +108,15 @@ export const sendMessage = async (req, res) => {
     }
 }
 
-// Get Chat Messages
+/*******************************************************************************
+ * Function:    getChatMessages
+ * Description: Retrieves all messages exchanged between the authenticated user
+ *              and another user, then marks received messages as seen.
+ * Input:       req (Express Request) - body: { to_user_id: string }
+ *              res (Express Response)
+ * Output:      JSON response with message list; received messages marked seen
+ * Return:      { success: boolean, messages: Message[] }
+ ******************************************************************************/
 export const getChatMessages = async (req, res) => {
     try {
         const { userId } = req.auth();
@@ -102,6 +139,15 @@ export const getChatMessages = async (req, res) => {
     }
 }
 
+/*******************************************************************************
+ * Function:    getUserRecentMessages
+ * Description: Retrieves all messages received by the authenticated user,
+ *              populated with sender and recipient data, sorted newest first.
+ * Input:       req (Express Request) - authenticated request with Clerk userId
+ *              res (Express Response)
+ * Output:      JSON response with recent message list
+ * Return:      { success: boolean, messages: Message[] }
+ ******************************************************************************/
 export const getUserRecentMessages = async (req, res) => {
     try {
         const { userId } = req.auth();

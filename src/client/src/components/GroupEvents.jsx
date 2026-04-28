@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        GroupEvents.jsx
+ * Description: Component that fetches and displays a group's events list,
+ *              with admin controls for creating and managing events.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React, { useState, useEffect } from 'react'
 import CreateEventModal from './CreateEventModal'
 import { useAuth } from '@clerk/clerk-react'
@@ -5,6 +15,15 @@ import toast from 'react-hot-toast'
 import api from '../api/axios'
 import EventDetailsModal from './EventDetailsModal'
 
+/*******************************************************************************
+ * Function:    GroupEvents
+ * Description: Fetches and renders the list of events for a group, with an
+ *              option to create new events and view event details in a modal.
+ * Input:       group (object) - group whose events are displayed
+ *              isAdmin (boolean) - whether the current user can manage events
+ * Output:      Rendered event list with create and detail modals
+ * Return:      JSX.Element
+ ******************************************************************************/
 const GroupEvents = ({ group, isAdmin = true }) => {
     
     // Create event modal state

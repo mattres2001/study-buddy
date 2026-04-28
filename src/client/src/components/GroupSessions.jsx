@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        GroupSessions.jsx
+ * Description: Component that fetches and displays active study sessions for
+ *              a group, with options to join, end, or create new sessions.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '@clerk/clerk-react'
 import toast from 'react-hot-toast'
@@ -5,6 +15,17 @@ import api from '../api/axios'
 import CreateSessionModal from './CreateSessionModal'
 import SessionDetailsModal from './SessionDetailsModal'
 
+/*******************************************************************************
+ * Function:    GroupSessions
+ * Description: Renders the list of active study sessions for a group with
+ *              options to join, view details, and create new sessions.
+ * Input:       group (object) - group whose sessions are displayed
+ *              sessions (array) - list of session objects
+ *              setSessions (function) - updates the session list in the parent
+ *              isAdmin (boolean) - whether the current user can manage sessions
+ * Output:      Rendered session list with create/join/detail controls
+ * Return:      JSX.Element
+ ******************************************************************************/
 const GroupSessions = ({ group, sessions, setSessions, isAdmin = true }) => {
 
     const [showModal, setShowModal] = useState(false)

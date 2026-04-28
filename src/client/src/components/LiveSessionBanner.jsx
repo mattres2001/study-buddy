@@ -1,8 +1,30 @@
+/*******************************************************************************
+ * File:        LiveSessionBanner.jsx
+ * Description: Banner component that displays an active (live) study session
+ *              and provides join/end controls for participants and admins.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React, { useEffect, useMemo, useState } from 'react'
 import { useAuth } from '@clerk/clerk-react'
 import api from '../api/axios'
 import toast from 'react-hot-toast'
 
+/*******************************************************************************
+ * Function:    LiveSessionBanner
+ * Description: Displays a banner for currently active sessions, allowing
+ *              users to join or admins to end each live session.
+ * Input:       sessions (array) - list of session objects
+ *              setSessions (function) - updates sessions in the parent
+ *              group (object) - group the sessions belong to
+ *              isAdmin (boolean) - whether the current user can end sessions
+ *              showGroupInfo (boolean) - whether to display the group name
+ * Output:      Rendered live session banner(s)
+ * Return:      JSX.Element
+ ******************************************************************************/
 const LiveSessionBanner = ({ sessions, setSessions, group, isAdmin, showGroupInfo }) => {
 
     const [isEditingDescription, setIsEditingDescription] = useState(false)

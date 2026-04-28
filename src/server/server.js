@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        server.js
+ * Description: Express server entry point. Initializes middleware, connects to
+ *              the database, and mounts all API route handlers.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';

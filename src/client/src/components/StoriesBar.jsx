@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        StoriesBar.jsx
+ * Description: Horizontal scrollable bar displaying story thumbnails from the
+ *              user's feed, with a button to create a new story.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React, { useEffect, useState } from 'react'
 import { dummyStoriesData } from '../assets/assets'
 import { Plus } from 'lucide-react'
@@ -7,6 +17,14 @@ import StoryViewer from './StoryViewer'
 import { useAuth } from '@clerk/clerk-react'
 import api from '../api/axios'
 
+/*******************************************************************************
+ * Function:    StoriesBar
+ * Description: Fetches stories from the API and renders a horizontal scrollable
+ *              bar of story thumbnails with a create-story button.
+ * Input:       None (reads user from Clerk and fetches from API)
+ * Output:      Rendered story thumbnail bar with StoryModal and StoryViewer
+ * Return:      JSX.Element
+ ******************************************************************************/
 const StoriesBar = () => {
 
     const { getToken } = useAuth()

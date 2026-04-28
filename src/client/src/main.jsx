@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        main.jsx
+ * Description: React application entry point. Wraps the app with Clerk auth,
+ *              React Router, and Redux store providers before mounting.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'

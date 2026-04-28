@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        Sidebar.jsx
+ * Description: Main application sidebar containing the logo, navigation menu,
+ *              group bar, user avatar, and sign-out control.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React, { useState } from 'react'
 import { assets, dummyUserData } from '../assets/assets'
 import { Link, useNavigate } from 'react-router-dom'
@@ -8,6 +18,15 @@ import { useSelector } from 'react-redux'
 import CreateEventModal from './CreateEventModal'
 import CreateSessionModal from './CreateSessionModal'
 
+/*******************************************************************************
+ * Function:    Sidebar
+ * Description: Renders the main application sidebar with logo, navigation
+ *              links, group list, user avatar, and a sign-out button.
+ * Input:       sidebarOpen (boolean) - whether the sidebar is expanded
+ *              setSidebarOpen (function) - toggles sidebar open/closed state
+ * Output:      Rendered sidebar navigation panel
+ * Return:      JSX.Element
+ ******************************************************************************/
 const Sidebar = ({sidebarOpen, setSidebarOpen}) => {
     
     const navigate = useNavigate()

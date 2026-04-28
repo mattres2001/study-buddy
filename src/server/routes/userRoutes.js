@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * File:        userRoutes.js
+ * Description: Express router defining all /api/user endpoints for profile
+ *              retrieval, updates, follow/unfollow, connections, discovery,
+ *              and user recommendations.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import express from 'express';
 import { 
     getUserData, 
@@ -8,7 +19,8 @@ import {
     sendConnectionRequest,
     acceptConnectionRequest,
     getUserConnections,
-    getUserProfiles 
+    getUserProfiles,
+    getRecommendedUsers
 } from '../controllers/userController.js';
 import { protect } from '../middleware/auth.js';
 import { upload } from '../configs/multer.js';
@@ -29,5 +41,6 @@ userRouter.post('/accept', protect, acceptConnectionRequest);
 userRouter.get('/connections', protect, getUserConnections);
 userRouter.post('/profiles', getUserProfiles)
 userRouter.get('/recent-messages', protect, getUserRecentMessages)
+userRouter.get('/recommendations', protect, getRecommendedUsers)
 
 export default userRouter

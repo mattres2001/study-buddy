@@ -1,7 +1,27 @@
+/*******************************************************************************
+ * File:        GroupBarItem.jsx
+ * Description: Individual group item component rendered inside GroupBar,
+ *              displaying the group picture and name with selection state.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React from 'react'
 import { assets } from '../assets/assets.js'
 import { useNavigate } from 'react-router-dom'
 
+/*******************************************************************************
+ * Function:    GroupBarItem
+ * Description: Renders a single clickable group entry with avatar and name.
+ *              Navigates to the group profile or calls onSelect when clicked.
+ * Input:       group (object) - group data (name, group_picture)
+ *              onSelect (function) - callback when the item is selected
+ *              isSelected (boolean) - highlights the item if currently active
+ * Output:      Rendered group list item
+ * Return:      JSX.Element
+ ******************************************************************************/
 const GroupBarItem = ({ group, onSelect, isSelected  }) => {
     const profile = group?.group_picture || assets.sample_profile;
     const cover = group?.cover_photo || assets.sample_cover;

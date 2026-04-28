@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        ProfileModal.jsx
+ * Description: Modal component for editing the authenticated user's profile,
+ *              including bio, location, courses, subjects, and profile images.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React, { useState } from 'react'
 import { dummyUserData } from '../assets/assets'
 import { Pencil } from 'lucide-react'
@@ -6,6 +16,14 @@ import { updateUser } from '../features/user/userSlice'
 import toast from 'react-hot-toast'
 import { useAuth } from '@clerk/clerk-react'
 
+/*******************************************************************************
+ * Function:    ProfileModal
+ * Description: Renders an editable profile form modal pre-filled with the
+ *              authenticated user's current data from the Redux store.
+ * Input:       setShowEdit (function) - closes the modal when done editing
+ * Output:      Profile updated via Redux updateUser thunk; modal closed
+ * Return:      JSX.Element
+ ******************************************************************************/
 const ProfileModal = ({setShowEdit}) => {
 
     const dispatch = useDispatch()

@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        sessionRoutes.js
+ * Description: Express router defining all /api/session endpoints for starting,
+ *              joining, ending, and managing study sessions within groups.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import express from 'express'
 import { upload } from '../configs/multer.js'
 import { protect } from '../middleware/auth.js'

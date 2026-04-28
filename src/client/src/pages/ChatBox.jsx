@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        ChatBox.jsx
+ * Description: Direct message chat page displaying conversation history with
+ *              a specific user and supporting text and image message sending.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React, { useRef, useState, useEffect } from 'react'
 import { dummyMessagesData, dummyUserData } from '../assets/assets'
 import { ImageIcon, SendHorizonal } from 'lucide-react'
@@ -8,6 +18,15 @@ import { fetchMessages, addMessage, resetMessages } from '../features/messages/m
 import toast from 'react-hot-toast'
 import api from '../api/axios'
 
+/*******************************************************************************
+ * Function:    ChatBox
+ * Description: Fetches and displays the full message history with a specific
+ *              user (identified by URL param), listens for new messages via
+ *              the Redux store, and submits text or image messages via the API.
+ * Input:       None (reads userId from URL params and auth from Clerk)
+ * Output:      Rendered chat view with message list and input field
+ * Return:      JSX.Element
+ ******************************************************************************/
 const ChatBox = () => {
 
     const { messages } = useSelector((state) => state.messages)

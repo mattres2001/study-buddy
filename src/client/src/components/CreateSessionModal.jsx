@@ -1,9 +1,30 @@
+/*******************************************************************************
+ * File:        CreateSessionModal.jsx
+ * Description: Modal component for scheduling a new group study session,
+ *              using ActivityForm for input and submitting to the API.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import { useState } from 'react'
 import { useAuth } from '@clerk/clerk-react'
 import ActivityForm from './ActivityForm'
 import api from '../api/axios'
 import toast from 'react-hot-toast'
 
+/*******************************************************************************
+ * Function:    CreateSessionModal
+ * Description: Renders a modal form for scheduling a new group study session
+ *              using the ActivityForm component and submitting to the API.
+ * Input:       group (object) - group the session belongs to
+ *              groups (array) - list of available groups for selection
+ *              setShowModal (function) - controls modal visibility
+ *              onCreated (function) - callback invoked after successful creation
+ * Output:      New session created via API; modal closed on success
+ * Return:      JSX.Element
+ ******************************************************************************/
 const CreateSessionModal = ({ group, groups = [], setShowModal, onCreated }) => {
 
     const { userId, getToken } = useAuth()

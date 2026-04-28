@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        groupRoutes.js
+ * Description: Express router defining all /api/group endpoints for creating
+ *              and retrieving study groups.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import express from 'express';
 import { 
     createGroup,

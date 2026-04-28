@@ -1,5 +1,23 @@
+/*******************************************************************************
+ * File:        GroupCard.jsx
+ * Description: Card component displaying a group's cover photo, picture,
+ *              name, and a join/view button.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React from 'react'
 import banner from "../assets/sample_cover.jpg"
+
+/*******************************************************************************
+ * Function:    GroupCard
+ * Description: Renders a styled card with the group's banner, avatar, and name.
+ * Input:       group (object) - group data (name, group_picture, cover_photo)
+ * Output:      Rendered group card UI
+ * Return:      JSX.Element
+ ******************************************************************************/
 const GroupCard = ({group}) => {
     return (
         <div className="bg-white rounded-xl shadow overflow-hidden w-80 ml-6 mt-6">

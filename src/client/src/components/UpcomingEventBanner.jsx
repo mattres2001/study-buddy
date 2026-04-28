@@ -1,5 +1,26 @@
+/*******************************************************************************
+ * File:        UpcomingEventBanner.jsx
+ * Description: Banner component displaying a summary of an upcoming group event
+ *              with date, time, location, and optional group info.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React from 'react'
 
+/*******************************************************************************
+ * Function:    UpcomingEventBanner
+ * Description: Renders a compact event card showing title, date/time, location,
+ *              RSVP count, and optionally the group name.
+ * Input:       event (object) - event data
+ *              group (object) - group the event belongs to
+ *              isAdmin (boolean) - whether the current user is a group admin
+ *              showGroupInfo (boolean) - whether to display the group name
+ * Output:      Rendered event banner
+ * Return:      JSX.Element
+ ******************************************************************************/
 const UpcomingEventBanner = ({ event, group, isAdmin, showGroupInfo }) => {
 
     const startTime = new Date(event.started_at)

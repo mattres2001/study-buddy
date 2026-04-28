@@ -1,9 +1,27 @@
+/*******************************************************************************
+ * File:        CreateGroup.jsx
+ * Description: Page for creating a new study group, rendering the
+ *              CreateGroupModal as the primary page content.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React, { useState } from 'react'
 import { useAuth } from '@clerk/clerk-react'
 import { PenBox } from 'lucide-react'
 import CreateGroupModal from '../components/CreateGroupModal'
 import Loading from '../components/Loading'
 
+/*******************************************************************************
+ * Function:    CreateGroup
+ * Description: Renders the group creation page by embedding CreateGroupModal
+ *              as the primary content with navigation back on completion.
+ * Input:       None
+ * Output:      Rendered group creation page
+ * Return:      JSX.Element
+ ******************************************************************************/
 const CreateGroup = () => {
     
     // Get current user's userId

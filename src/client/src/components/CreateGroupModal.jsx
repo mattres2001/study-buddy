@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        CreateGroupModal.jsx
+ * Description: Modal component for creating a new study group, including
+ *              group picture and cover photo upload, and API submission.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React, { useState } from 'react'
 import { useAuth } from '@clerk/clerk-react'
 import { Pencil, Paperclip } from 'lucide-react'
@@ -5,6 +15,14 @@ import { assets } from '../assets/assets.js'
 import { toast } from 'react-hot-toast'
 import api from '../api/axios' // axios instance with baseURL
 
+/*******************************************************************************
+ * Function:    CreateGroupModal
+ * Description: Renders a modal form for creating a new study group with name,
+ *              description, subject, location, and optional image uploads.
+ * Input:       setShowModal (function) - controls modal visibility
+ * Output:      New group created via API; modal closed on success
+ * Return:      JSX.Element
+ ******************************************************************************/
 const CreateGroupModal = ({setShowModal}) => {
 
     const { userId, getToken } = useAuth()

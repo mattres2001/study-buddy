@@ -1,9 +1,27 @@
+/*******************************************************************************
+ * File:        Messages.jsx
+ * Description: Messages inbox page listing all of the authenticated user's
+ *              recent conversations with links to open each individual chat.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React from 'react'
 import { dummyConnectionsData } from '../assets/assets'
 import { MessageSquare, Eye } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
+/*******************************************************************************
+ * Function:    Messages
+ * Description: Renders the messages inbox listing all recent conversations
+ *              from connections, with links to open each individual ChatBox.
+ * Input:       None (reads auth from Clerk; fetches recent messages from API)
+ * Output:      Rendered inbox with conversation list
+ * Return:      JSX.Element
+ ******************************************************************************/
 const Messages = () => {
 
     const { connections } = useSelector((state) => state.connections)

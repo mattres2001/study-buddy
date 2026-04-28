@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        ShareModal.jsx
+ * Description: Modal component for sharing a post with connections by sending
+ *              a direct message containing the post link.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React, { useState, useEffect } from 'react'
 import { ArrowLeft, Send, Link } from 'lucide-react'
 import { useAuth } from '@clerk/clerk-react'
@@ -5,6 +15,14 @@ import Loading from './Loading'
 import api from '../api/axios'
 import toast from 'react-hot-toast'
 
+/*******************************************************************************
+ * Function:    ShareModal
+ * Description: Renders a modal that lets the user share a post link with their
+ *              connections by sending a direct message via the API.
+ * Input:       setShowModal (function) - controls modal visibility
+ * Output:      Message sent to selected connections via API
+ * Return:      JSX.Element
+ ******************************************************************************/
 const ShareModal = ({setShowModal}) => {
 
     const [ connections, setConnections ] = useState([])

@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        Dashboard.jsx
+ * Description: Main dashboard page aggregating the user's groups, upcoming
+ *              sessions, events, and live session banners in a single view.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React, { useState, useEffect } from 'react'
 import { useUser, useAuth } from '@clerk/clerk-react'
 import api from '../api/axios'
@@ -5,6 +15,14 @@ import LiveSessionBanner from '../components/LiveSessionBanner'
 import UpcomingEventBanner from '../components/UpcomingEventBanner'
 import EventDetailsModal from '../components/EventDetailsModal'
 
+/*******************************************************************************
+ * Function:    Dashboard
+ * Description: Fetches and displays the authenticated user's groups, upcoming
+ *              events, live sessions, and upcoming sessions in a single view.
+ * Input:       None (reads auth from Clerk; fetches data from the API)
+ * Output:      Rendered dashboard with group, session, and event sections
+ * Return:      JSX.Element
+ ******************************************************************************/
 const Dashboard = () => {
     
     const { user } = useUser() // or your auth

@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        Layout.jsx
+ * Description: Root layout wrapper for authenticated pages, rendering the
+ *              Sidebar and the current route's page content via Outlet.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React, { useState } from 'react'
 import Sidebar from '../components/Sidebar'
 import GroupBar from '../components/GroupBar'
@@ -7,6 +17,14 @@ import { dummyUserData } from '../assets/assets'
 import Loading from '../components/Loading'
 import { useSelector } from 'react-redux'
 
+/*******************************************************************************
+ * Function:    Layout
+ * Description: Authenticated page shell that renders the Sidebar alongside
+ *              the active child route's content via React Router's Outlet.
+ * Input:       None
+ * Output:      Rendered layout with sidebar and routed page content
+ * Return:      JSX.Element
+ ******************************************************************************/
 const Layout = () => {
     
     const user = useSelector((state) => state.user.value)

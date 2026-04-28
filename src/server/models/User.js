@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        User.js
+ * Description: Mongoose schema and model definition for the User document,
+ *              storing profile data, social connections, and group memberships.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
