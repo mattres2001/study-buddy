@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        Connection.js
+ * Description: Mongoose schema and model definition for the Connection document,
+ *              tracking pending and accepted connection requests between users.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import mongoose from 'mongoose';
 
 const connectionSchema = new mongoose.Schema({

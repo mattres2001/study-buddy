@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        UserCard.jsx
+ * Description: User profile card component used in Discover and recommendations,
+ *              displaying user info with follow, connect, and message actions.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React from 'react'
 import { dummyUserData } from '../assets/assets'
 import { MapPin, MessageCircle, Plus, UserPlus } from 'lucide-react'
@@ -8,7 +18,18 @@ import api from '../api/axios'
 import toast from 'react-hot-toast'
 import { fetchUser } from '../features/user/userSlice'
 
-const UserCard = ({user}) => {
+/*******************************************************************************
+ * Function:    UserCard
+ * Description: Renders a user profile card with avatar, name, location, and
+ *              action buttons for following, connecting, or messaging the user.
+ * Input:       user (object) - user profile data
+ *              sharedCourses (array) - courses shared with the current user
+ *              sharedSubjects (array) - subjects shared with the current user
+ *              mutualConnectionsCount (number) - count of mutual connections
+ * Output:      Rendered user card with social action controls
+ * Return:      JSX.Element
+ ******************************************************************************/
+const UserCard = ({user, sharedCourses = [], sharedSubjects = [], mutualConnectionsCount = 0 }) => {
 
     const currentUser = useSelector((state) => state.user.value)
     const { getToken } = useAuth()
@@ -70,9 +91,30 @@ const UserCard = ({user}) => {
                 </div>
             </div>
 
+            {/* Recommendation caption */}
+            {(sharedCourses.length > 0 || sharedSubjects.length > 0 || mutualConnectionsCount > 0) && (
+                <div className='mt-3 flex flex-wrap gap-1 justify-center'>
+                    {mutualConnectionsCount > 0 && (
+                        <span className='text-xs bg-primary-50 text-primary-600 border border-primary-100 rounded-full px-2 py-0.5'>
+                            {mutualConnectionsCount} mutual {mutualConnectionsCount === 1 ? 'connection' : 'connections'}
+                        </span>
+                    )}
+                    {sharedCourses.length > 0 && (
+                        <span className='text-xs bg-primary-50 text-primary-700 border border-primary-100 rounded-full px-2 py-0.5'>
+                            {sharedCourses.length} shared {sharedCourses.length === 1 ? 'course' : 'courses'}
+                        </span>
+                    )}
+                    {sharedSubjects.length > 0 && (
+                        <span className='text-xs bg-sky-50 text-sky-600 border border-sky-100 rounded-full px-2 py-0.5'>
+                            {sharedSubjects.length} shared {sharedSubjects.length === 1 ? 'subject' : 'subjects'}
+                        </span>
+                    )}
+                </div>
+            )}
+
             <div className='flex mt-4 gap-2'>
                 {/* Follow Button */}
-                <button onClick={handleFollow} disabled={currentUser?.following.includes(user._id)} className='w-full py-3 rounded-md flex justify-center items-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 active:scale-95 transition text-white cursor-pointer'>
+                <button onClick={handleFollow} disabled={currentUser?.following.includes(user._id)} className='w-full py-3 rounded-md flex justify-center items-center gap-2 bg-gradient-to-r from-primary-500 to-primary-700 hover:from-primary-600 hover:to-primary-700 active:scale-95 transition text-white cursor-pointer'>
                     <UserPlus className='w-4 h-4'/> {currentUser?.following.includes(user._id) ? 'Following' : 'Follow'}
                 </button>
 

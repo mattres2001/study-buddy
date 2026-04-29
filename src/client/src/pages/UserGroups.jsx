@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        UserGroups.jsx
+ * Description: Page displaying all study groups available to or joined by the
+ *              user, rendered as a grid of GroupCard components.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import GroupCard from '../components/GroupCard'
 import banner from '../assets/sample_cover.jpg'
 
@@ -39,6 +49,14 @@ const groups = [
 ]
 
 
+/*******************************************************************************
+ * Function:    UserGroups
+ * Description: Renders a grid of GroupCard components displaying all study
+ *              groups available to or joined by the user.
+ * Input:       None (reads group data from the Redux store or API)
+ * Output:      Rendered group card grid
+ * Return:      JSX.Element
+ ******************************************************************************/
 const UserGroups = () => {
   return (
     <div className='p-6 ml-8'>

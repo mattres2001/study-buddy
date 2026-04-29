@@ -1,7 +1,26 @@
+/*******************************************************************************
+ * File:        PostModal.jsx
+ * Description: Modal overlay that displays an expanded PostCard view for a
+ *              single post.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React, { useState } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import PostCard from './PostCard'
 
+/*******************************************************************************
+ * Function:    PostModal
+ * Description: Wraps a PostCard in a full-screen modal overlay with a back
+ *              button to close the modal.
+ * Input:       post (object) - post data to display
+ *              setShowModal (function) - controls modal visibility
+ * Output:      Rendered post modal overlay
+ * Return:      JSX.Element
+ ******************************************************************************/
 const PostModal = ({post, setShowModal}) => {
     
     const [ loading, setLoading ] = useState(false)

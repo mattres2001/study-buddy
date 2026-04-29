@@ -1,0 +1,35 @@
+/*******************************************************************************
+ * File:        sessionRoutes.js
+ * Description: Express router defining all /api/session endpoints for starting,
+ *              joining, ending, and managing study sessions within groups.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
+import express from 'express'
+import { protect } from '../middleware/auth.js'
+import {
+    startSession,
+    getGroupSessions,
+    updateSessionVibe,
+    joinSession,
+    endSession,
+    getUpcomingGroupSessions,
+    updateDescription,
+    getActiveSessionsByGroup
+} from '../controllers/sessionController.js'
+
+const sessionRouter = express.Router();
+
+sessionRouter.post('/start', protect, startSession)
+sessionRouter.get('/active-by-group', protect, getActiveSessionsByGroup)
+sessionRouter.get('/:groupId', protect, getGroupSessions)
+sessionRouter.get('/:groupId/upcoming', protect, getUpcomingGroupSessions)
+sessionRouter.patch('/:sessionId/vibe', protect, updateSessionVibe)
+sessionRouter.post('/:sessionId/join', protect, joinSession)
+sessionRouter.post('/:sessionId/end', protect, endSession)
+sessionRouter.patch('/:sessionId/description', protect, updateDescription)
+
+export default sessionRouter

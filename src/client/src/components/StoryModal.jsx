@@ -1,9 +1,28 @@
+/*******************************************************************************
+ * File:        StoryModal.jsx
+ * Description: Modal component for creating a new story, allowing text content,
+ *              background color selection, or image/video upload.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import { ArrowLeft, Sparkle, TextIcon, Upload } from 'lucide-react'
 import React, { useState } from 'react'
 import toast from 'react-hot-toast'
 import { useAuth } from '@clerk/clerk-react'
 import api from '../api/axios'
 
+/*******************************************************************************
+ * Function:    StoryModal
+ * Description: Renders a creation modal allowing the user to compose a story
+ *              with text, background color, or an uploaded image/video.
+ * Input:       setShowModal (function) - closes the modal after submission
+ *              fetchStories (function) - refreshes the story list on success
+ * Output:      New story created via API; story bar refreshed
+ * Return:      JSX.Element
+ ******************************************************************************/
 const StoryModal = ({setShowModal, fetchStories}) => {
 
     const bgColors = ["#4f46e5", "#7c3aed", "#db2777", "#e11d48", "#ca8a04", "#0d9488"]
@@ -124,7 +143,7 @@ const StoryModal = ({setShowModal, fetchStories}) => {
                 </div>
                 <button onClick={() => toast.promise(handleCreateStory(), {
                     loading: 'Saving...'
-                })} className='flex items-center justify-center gap-2 text-white py-3 mt-4 w-full rounded bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 active:scale-95 transition cursor-pointer'>
+                })} className='flex items-center justify-center gap-2 text-white py-3 mt-4 w-full rounded bg-gradient-to-r from-primary-500 to-primary-700 hover:from-primary-600 hover:to-primary-700 active:scale-95 transition cursor-pointer'>
                     <Sparkle size={18}/> Create Story
                 </button>
             </div>

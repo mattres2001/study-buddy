@@ -1,10 +1,30 @@
+/*******************************************************************************
+ * File:        storyController.js
+ * Description: Express controller handling story creation (with media upload)
+ *              and retrieval of stories from connected/followed users.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import fs from 'fs';
 import imagekit from '../configs/imagekit.js';
 import Story from '../models/Story.js';
 import User from '../models/User.js';
 import { inngest } from '../inngest/index.js';
 
-// Add User Story
+/*******************************************************************************
+ * Function:    addUserStory
+ * Description: Creates a new story for the authenticated user, uploading any
+ *              image or video media to ImageKit and scheduling deletion via
+ *              Inngest after 24 hours.
+ * Input:       req (Express Request) - body: { content, media_type,
+ *                  background_color }; file: media
+ *              res (Express Response)
+ * Output:      New Story document saved; Inngest deletion event dispatched
+ * Return:      { success: boolean }
+ ******************************************************************************/
 export const addUserStory = async (req, res) => {
     try {
         const { userId } = req.auth();
@@ -45,7 +65,15 @@ export const addUserStory = async (req, res) => {
     }
 }
 
-// Get User Stories
+/*******************************************************************************
+ * Function:    getStories
+ * Description: Retrieves stories from the authenticated user and their
+ *              connections and followings, sorted newest first.
+ * Input:       req (Express Request) - authenticated request with Clerk userId
+ *              res (Express Response)
+ * Output:      JSON response with story list
+ * Return:      { success: boolean, stories: Story[] }
+ ******************************************************************************/
 export const getStories = async (req, res) => {
     try {
         const { userId } = req.auth();

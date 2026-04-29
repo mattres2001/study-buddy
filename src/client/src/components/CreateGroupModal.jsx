@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        CreateGroupModal.jsx
+ * Description: Modal component for creating a new study group, including
+ *              group picture and cover photo upload, and API submission.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React, { useState } from 'react'
 import { useAuth } from '@clerk/clerk-react'
 import { Pencil, Paperclip } from 'lucide-react'
@@ -5,6 +15,14 @@ import { assets } from '../assets/assets.js'
 import { toast } from 'react-hot-toast'
 import api from '../api/axios' // axios instance with baseURL
 
+/*******************************************************************************
+ * Function:    CreateGroupModal
+ * Description: Renders a modal form for creating a new study group with name,
+ *              description, subject, location, and optional image uploads.
+ * Input:       setShowModal (function) - controls modal visibility
+ * Output:      New group created via API; modal closed on success
+ * Return:      JSX.Element
+ ******************************************************************************/
 const CreateGroupModal = ({setShowModal}) => {
 
     const { userId, getToken } = useAuth()
@@ -125,7 +143,7 @@ const CreateGroupModal = ({setShowModal}) => {
                         <div className='flex justify-end space-x-3 pt-6'>
                             <button onClick={() => setShowModal(false)}  type='button' className='px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer'>Cancel</button>
 
-                            <button type='submit' className='px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg hover:from-indigo-600 hover:to-purple-700 transition cursor-pointer'>Save Changes</button>
+                            <button type='submit' className='px-4 py-2 bg-gradient-to-r from-primary-500 to-primary-700 text-white rounded-lg hover:from-primary-600 hover:to-primary-700 transition cursor-pointer'>Save Changes</button>
                         </div>
                     </form>
                 </div>

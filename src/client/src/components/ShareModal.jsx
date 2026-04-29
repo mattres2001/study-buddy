@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        ShareModal.jsx
+ * Description: Modal component for sharing a post with connections by sending
+ *              a direct message containing the post link.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React, { useState, useEffect } from 'react'
 import { ArrowLeft, Send, Link } from 'lucide-react'
 import { useAuth } from '@clerk/clerk-react'
@@ -5,6 +15,14 @@ import Loading from './Loading'
 import api from '../api/axios'
 import toast from 'react-hot-toast'
 
+/*******************************************************************************
+ * Function:    ShareModal
+ * Description: Renders a modal that lets the user share a post link with their
+ *              connections by sending a direct message via the API.
+ * Input:       setShowModal (function) - controls modal visibility
+ * Output:      Message sent to selected connections via API
+ * Return:      JSX.Element
+ ******************************************************************************/
 const ShareModal = ({setShowModal}) => {
 
     const [ connections, setConnections ] = useState([])
@@ -74,7 +92,7 @@ const ShareModal = ({setShowModal}) => {
                     <button className='flex-1 flex items-center justify-center gap-2 p-3 rounded cursor-pointer text-black bg-gradient-to-r from-white to-gray-200 hover:from-gray-50 hover:to-gray-300 active:scale-95 transition'>
                         <Link size={18} className=''/> Copy Link
                     </button>
-                    <button className='flex-1 flex items-center justify-center gap-2 p-3 rounded cursor-pointer text-white bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 active:scale-95 transition'>
+                    <button className='flex-1 flex items-center justify-center gap-2 p-3 rounded cursor-pointer text-white bg-gradient-to-r from-primary-500 to-primary-700 hover:from-primary-600 hover:to-primary-700 active:scale-95 transition'>
                         <Send size={18} className=''/> Share
                     </button>
 

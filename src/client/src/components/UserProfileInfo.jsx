@@ -1,7 +1,29 @@
+/*******************************************************************************
+ * File:        UserProfileInfo.jsx
+ * Description: Profile info panel displaying a user's bio, location, join date,
+ *              post count, followers/following counts, and an edit button for
+ *              the authenticated user's own profile.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import { Calendar, MapPin, PenBox, Verified } from 'lucide-react'
 import React from 'react'
 import moment from 'moment'
 
+/*******************************************************************************
+ * Function:    UserProfileInfo
+ * Description: Renders the profile information section with cover photo, avatar,
+ *              name, bio, stats, and an optional edit button.
+ * Input:       user (object) - user profile data
+ *              posts (array) - user's posts for post count display
+ *              profileId (string) - ID of the profile being viewed
+ *              setShowEdit (function) - opens the ProfileModal for editing
+ * Output:      Rendered profile info panel
+ * Return:      JSX.Element
+ ******************************************************************************/
 const UserProfileInfo = ({ user, posts, profileId, setShowEdit }) => {
     return (
         <div className='relative py-4 px-6 md:px-8 bg-white'>
@@ -12,6 +34,32 @@ const UserProfileInfo = ({ user, posts, profileId, setShowEdit }) => {
                 </div>
 
                 <div className='w-full pt-16 md:pt-0 md:pl-36'>
+                    {/* Courses + Subjects Tags */}
+                    {(user.courses?.length > 0 || user.subjects?.length > 0) && (
+                        <div className="flex flex-wrap gap-2 mb-3">
+
+                            {/* Courses */}
+                            {user.courses?.map((course, i) => (
+                                <span
+                                    key={`course-${i}`}
+                                    className="text-xs px-3 py-1 rounded-full bg-primary-100 text-primary-700 font-medium"
+                                >
+                                    🎓 {course}
+                                </span>
+                            ))}
+
+                            {/* Subjects */}
+                            {user.subjects?.map((subject, i) => (
+                                <span
+                                    key={`subject-${i}`}
+                                    className="text-xs px-3 py-1 rounded-full bg-pink-100 text-pink-700 font-medium"
+                                >
+                                    📚 {subject}
+                                </span>
+                            ))}
+                        </div>
+                    )}
+
                     <div className='flex flex-col md:flex-row items-start justify-between'>
                         <div>
                             <div className='flex items-center gap-3'>
@@ -30,6 +78,7 @@ const UserProfileInfo = ({ user, posts, profileId, setShowEdit }) => {
                                 </button>
                         }
                     </div>
+
                     <p className='text-gray-700 text-sm max-w-md mt-4'>{user.bio}</p>
 
                     <div className='flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-500 mt-4'>

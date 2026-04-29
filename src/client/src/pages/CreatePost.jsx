@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        CreatePost.jsx
+ * Description: Page for composing and submitting a new post, supporting text,
+ *              image, and combined post types with image preview and upload.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React, { useState } from 'react'
 import { dummyUserData } from '../assets/assets'
 import { Image, X } from 'lucide-react'
@@ -7,6 +17,14 @@ import { useAuth } from '@clerk/clerk-react'
 import api from '../api/axios'
 import { useNavigate } from 'react-router-dom'
 
+/*******************************************************************************
+ * Function:    CreatePost
+ * Description: Renders a post composition form supporting text, image, and
+ *              combined post types with image preview and API submission.
+ * Input:       None (reads auth from Clerk)
+ * Output:      New post submitted via API; navigates to feed on success
+ * Return:      JSX.Element
+ ******************************************************************************/
 const CreatePost = () => {
     
     const navigate = useNavigate()
@@ -103,7 +121,7 @@ const CreatePost = () => {
                                 success: <p>Post Added</p>,
                                 error: <p>Post Not Added</p>,
                             }
-                        )} className='text-sm bg-gradient-to-r from-indigo-500 to-purple-600 hover:fromt-indigo-600 hover:to-purple-700 active:scale-95 transition text-white font-medium px-8 py-2 rounded-md cursor-pointer'>
+                        )} className='text-sm bg-gradient-to-r from-primary-500 to-primary-700 hover:fromt-primary-600 hover:to-primary-700 active:scale-95 transition text-white font-medium px-8 py-2 rounded-md cursor-pointer'>
                             Publish Post
                         </button>
                     </div>

@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        assets.js
+ * Description: Exports static image assets, navigation menu configuration,
+ *              and dummy data objects used for UI development and testing.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import bgImage from './bgImage.jpg'
 import sample_cover from './sample_cover.jpg'
 import sample_profile from './sample_profile.jpg'
@@ -16,8 +26,8 @@ export const assets = {
 }
 
 export const menuItemsData = [
-    { to: '/', label: 'Feed', Icon: Home },
-    { to: '/create-group', label: 'Study Groups', Icon: Users },
+    { to: '/', label: 'Dashboard', Icon: Home },
+    // { to: '/create-group', label: 'Study Groups', Icon: Users },
     { to: '/messages', label: 'Messages', Icon: MessageCircle },
     { to: '/connections', label: 'Connections', Icon: UserPlus },
     { to: '/discover', label: 'Discover', Icon: Search },

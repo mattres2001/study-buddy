@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * File:        userController.js
+ * Description: Express controller handling all user-related API operations
+ *              including profile retrieval, updates, follow/unfollow, connection
+ *              requests, and user discovery/recommendations.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import imagekit from '../configs/imagekit.js'
 import User from '../models/User.js'
 import fs from 'fs'
@@ -6,7 +17,15 @@ import Post from '../models/Post.js'
 import { inngest } from '../inngest/index.js'
 import { clerkClient } from '@clerk/express'
 
-// Get user Data using userId
+/*******************************************************************************
+ * Function:    getUserData
+ * Description: Retrieves the authenticated user's profile, including populated
+ *              group references.
+ * Input:       req (Express Request) - authenticated request with Clerk userId
+ *              res (Express Response)
+ * Output:      JSON response with user document
+ * Return:      { success: boolean, user: User }
+ ******************************************************************************/
 export const getUserData = async (req, res) => {
     try {
         const { userId } = req.auth();
@@ -32,11 +51,21 @@ export const getUserData = async (req, res) => {
     }
 }
 
-// Update Data using userId
+
+/*******************************************************************************
+ * Function:    updateUserData
+ * Description: Updates the authenticated user's profile fields and optionally
+ *              uploads new profile or cover images to ImageKit.
+ * Input:       req (Express Request) - body: username, bio, location, full_name,
+ *                  courses, subjects; files: profile, cover
+ *              res (Express Response)
+ * Output:      JSON response with updated user document
+ * Return:      { success: boolean, user: User, message: string }
+ ******************************************************************************/
 export const updateUserData = async (req, res) => {
     try {
         const { userId } = req.auth();
-        let { username, bio, location, full_name } = req.body;
+        let { username, bio, location, full_name, courses, subjects } = req.body;
 
         const tempUser = await User.findById(userId);
 
@@ -54,7 +83,9 @@ export const updateUserData = async (req, res) => {
             username,
             bio,
             location,
-            full_name
+            full_name,
+            courses: courses ? JSON.parse(courses) : [],
+            subjects: subjects ? JSON.parse(subjects) : []
         };
 
         const profile = req.files.profile && req.files.profile[0];
@@ -109,7 +140,15 @@ export const updateUserData = async (req, res) => {
     }
 }
 
-// Find Users using username, email, location, name
+/*******************************************************************************
+ * Function:    discoverUsers
+ * Description: Searches for users matching a query string against username,
+ *              email, full name, and location fields (case-insensitive).
+ * Input:       req (Express Request) - body: { input: string }
+ *              res (Express Response)
+ * Output:      JSON response with matching user documents
+ * Return:      { success: boolean, users: User[] }
+ ******************************************************************************/
 export const discoverUsers = async (req, res) => {
     try {
         const { userId } = req.auth();
@@ -134,7 +173,15 @@ export const discoverUsers = async (req, res) => {
     }
 }
 
-// Follow User
+/*******************************************************************************
+ * Function:    followUser
+ * Description: Adds the target user to the authenticated user's following list
+ *              and adds the authenticated user to the target's followers list.
+ * Input:       req (Express Request) - body: { id: string } (target user id)
+ *              res (Express Response)
+ * Output:      JSON response confirming the follow action
+ * Return:      { success: boolean, message: string }
+ ******************************************************************************/
 export const followUser = async (req, res) => {
     try {
         const { userId } = req.auth();
@@ -160,7 +207,16 @@ export const followUser = async (req, res) => {
     }
 }
 
-// Unfollow User
+/*******************************************************************************
+ * Function:    unfollowUser
+ * Description: Removes the target user from the authenticated user's following
+ *              list and removes the authenticated user from the target's
+ *              following list.
+ * Input:       req (Express Request) - body: { id: string } (target user id)
+ *              res (Express Response)
+ * Output:      JSON response confirming the unfollow action
+ * Return:      { success: boolean, message: string }
+ ******************************************************************************/
 export const unfollowUser = async (req, res) => {
     try {
         const { userId } = req.auth();
@@ -182,7 +238,16 @@ export const unfollowUser = async (req, res) => {
     }
 }
 
-// Send Connection Request
+/*******************************************************************************
+ * Function:    sendConnectionRequest
+ * Description: Creates a pending Connection document between two users and
+ *              triggers an Inngest event for email notification. Enforces a
+ *              rate limit of 20 requests per 24 hours.
+ * Input:       req (Express Request) - body: { id: string } (target user id)
+ *              res (Express Response)
+ * Output:      JSON response and Inngest event dispatched
+ * Return:      { success: boolean, message: string }
+ ******************************************************************************/
 export const sendConnectionRequest = async (req, res) => {
     try {
         const { userId } = req.auth();
@@ -229,7 +294,16 @@ export const sendConnectionRequest = async (req, res) => {
     }
 }
 
-// Send Connection Request
+/*******************************************************************************
+ * Function:    getUserConnections
+ * Description: Retrieves the authenticated user's connections, followers,
+ *              following list, and incoming pending connection requests.
+ * Input:       req (Express Request) - authenticated request with Clerk userId
+ *              res (Express Response)
+ * Output:      JSON response with connection data arrays
+ * Return:      { success: boolean, connections, followers, following,
+ *               pendingConnections }
+ ******************************************************************************/
 export const getUserConnections = async (req, res) => {
     try {
         const { userId } = req.auth();
@@ -258,7 +332,15 @@ export const getUserConnections = async (req, res) => {
     }
 }
 
-// Acceot Connection Request
+/*******************************************************************************
+ * Function:    acceptConnectionRequest
+ * Description: Accepts a pending connection request by updating both users'
+ *              connections arrays and setting the Connection status to accepted.
+ * Input:       req (Express Request) - body: { id: string } (requesting user id)
+ *              res (Express Response)
+ * Output:      JSON response confirming acceptance
+ * Return:      { success: boolean, message: string }
+ ******************************************************************************/
 export const acceptConnectionRequest = async (req, res) => {
     try {
         const { userId } = req.auth();
@@ -292,20 +374,159 @@ export const acceptConnectionRequest = async (req, res) => {
     }
 }
 
-// Get User Profiles
+/*******************************************************************************
+ * Function:    getUserProfiles
+ * Description: Retrieves a user's public profile, their posts, and group
+ *              memberships by profile ID.
+ * Input:       req (Express Request) - body: { profileId: string }
+ *              res (Express Response)
+ * Output:      JSON response with profile, posts, and groups
+ * Return:      { success: boolean, profile: User, posts: Post[], groups: Group[] }
+ ******************************************************************************/
 export const getUserProfiles = async (req, res) => {
     try {
         const { profileId } = req.body;
-        const profile = await User.findById(profileId);
+        const profile = await User.findById(profileId).populate({
+            path: 'groups',
+            select: 'name group_picture cover_photo'
+        });
 
         if (!profile) {
             return res.json({ success: false, message: 'Profile not found' });
         }
 
         const posts = await Post.find({ user: profileId }).populate('user');
-        res.json({ success: true, profile, posts });
+        res.json({ success: true, profile, posts, groups: profile.groups || [] });
     } catch (error) {
         console.log(error);
         res.json({ success: false, message: error.message });
     }
 }
+
+/*******************************************************************************
+ * Function:    getUsersByIds
+ * Description: Returns minimal profile data (id, name, avatar) for a list of
+ *              user IDs, used to render avatar stacks for RSVPs and participants.
+ * Input:       req (Express Request) - body: { userIds: string[] }
+ *              res (Express Response)
+ * Output:      JSON response with matched user profiles
+ * Return:      { success: boolean, users: Array<{ _id, full_name, profile_picture }> }
+ ******************************************************************************/
+export const getUsersByIds = async (req, res) => {
+    try {
+        const { userIds } = req.body
+        if (!userIds?.length) return res.json({ success: true, users: [] })
+        const users = await User.find(
+            { _id: { $in: userIds } },
+            { _id: 1, full_name: 1, profile_picture: 1, username: 1 }
+        )
+        res.json({ success: true, users })
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message })
+    }
+}
+
+/*******************************************************************************
+ * Function:    getRecommendedUsers
+ * Description: Scores and ranks non-connected users by shared courses, subjects,
+ *              and mutual connections, returning the top 10 recommendations.
+ * Input:       req (Express Request) - authenticated request with Clerk userId
+ *              res (Express Response)
+ * Output:      JSON response with scored recommendation list
+ * Return:      { success: boolean, recommendations: Array<{ user, score,
+ *               sharedCourses, sharedSubjects, mutualConnectionsCount }> }
+ ******************************************************************************/
+/*******************************************************************************
+ * Function:    declineConnectionRequest
+ * Description: Declines a pending incoming connection request by deleting the
+ *              Connection document without modifying either user's arrays.
+ * Input:       req (Express Request) - body: { id: string } (requesting user id)
+ *              res (Express Response)
+ * Output:      Connection document removed from the database
+ * Return:      { success: boolean, message: string }
+ ******************************************************************************/
+export const declineConnectionRequest = async (req, res) => {
+    try {
+        const { userId } = req.auth()
+        const { id } = req.body
+
+        const deleted = await Connection.findOneAndDelete({
+            from_user_id: id,
+            to_user_id: userId,
+            status: 'pending'
+        })
+
+        if (!deleted) return res.json({ success: false, message: 'Request not found' })
+
+        res.json({ success: true, message: 'Request declined' })
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message })
+    }
+}
+
+export const getRecommendedUsers = async (req, res) => {
+    try {
+        const { userId } = req.auth();
+
+        const currentUser = await User.findById(userId)
+            .populate('connections', '_id');
+
+        if (!currentUser) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        const currentConnections = currentUser.connections.map(c => c._id.toString());
+
+        // Exclude self + existing connections
+        const excludedIds = [...currentConnections, userId];
+
+        const users = await User.find({
+            _id: { $nin: excludedIds }
+        });
+
+        const scoredUsers = users.map(user => {
+            let score = 0;
+
+            // 🔹 Shared courses
+            const sharedCourses = user.courses.filter(course =>
+                currentUser.courses.includes(course)
+            );
+            score += sharedCourses.length * 3;
+
+            // 🔹 Shared subjects
+            const sharedSubjects = user.subjects.filter(subject =>
+                currentUser.subjects.includes(subject)
+            );
+            score += sharedSubjects.length * 2;
+
+            // 🔹 Mutual connections
+            const mutualConnections = user.connections.filter(conn =>
+                currentConnections.includes(conn.toString())
+            );
+            score += mutualConnections.length * 4;
+
+            return {
+                user,
+                score,
+                sharedCourses,
+                sharedSubjects,
+                mutualConnectionsCount: mutualConnections.length
+            };
+        });
+
+        // Sort by highest score
+        const sortedUsers = scoredUsers
+            .filter(u => u.score > 0) // optional: remove irrelevant users
+            .sort((a, b) => b.score - a.score)
+            .slice(0, 10); // limit results
+
+        res.json({
+            success: true,
+            recommendations: sortedUsers
+        });
+
+    } catch (error) {
+        console.error('Error getting recommendations:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+};

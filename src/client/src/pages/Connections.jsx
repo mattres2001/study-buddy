@@ -1,154 +1,234 @@
+/*******************************************************************************
+ * File:        Connections.jsx
+ * Description: Connections management page displaying the user's connections,
+ *              followers, following, and pending requests with accept, decline,
+ *              unfollow, and message controls.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React, { useEffect, useState } from 'react'
-import { Users, UserPlus, UserCheck, UserRoundPen, MessageSquare} from 'lucide-react'
+import { Users, UserPlus, UserCheck, UserRoundPen, MessageSquare } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import { 
-    dummyConnectionsData as connections,
-    dummyFollowersData as followers,
-    dummyFollowingData as following,
-    dummyPendingConnectionsData as pendingConnections
-} from '../assets/assets'
 import { useSelector, useDispatch } from 'react-redux'
 import { useAuth } from '@clerk/clerk-react'
 import { fetchConnections } from '../features/connections/connectionsSlice'
 import api from '../api/axios'
 import toast from 'react-hot-toast'
 
+/*******************************************************************************
+ * Function:    Connections
+ * Description: Displays the authenticated user's connections, followers,
+ *              following list, and pending connection requests from Redux state.
+ *              Supports accepting/declining requests, unfollowing, and messaging.
+ * Input:       None (reads connection state from Redux; fetches on mount)
+ * Output:      Rendered connections page with stat cards, tabs, and user list
+ * Return:      JSX.Element
+ ******************************************************************************/
 const Connections = () => {
-    
-    const [ currentTab, setCurrentTab ] = useState('Followers')
 
-    const navigate = useNavigate()
+    const [currentTab, setCurrentTab] = useState('Followers')
+
+    const navigate  = useNavigate()
     const { getToken } = useAuth()
-    const dispatch = useDispatch()
+    const dispatch  = useDispatch()
 
     const { connections, pendingConnections, followers, following } = useSelector((state) => state.connections)
 
-    const dataArray = [
-        { label: 'Followers', value: followers, icon: Users }, 
-        { label: 'Following', value: following, icon: UserCheck }, 
-        { label: 'Pending', value: pendingConnections, icon: UserRoundPen }, 
-        { label: 'Connections', value: connections, icon: UserPlus }, 
+    const tabs = [
+        { label: 'Followers',   value: followers,          icon: Users },
+        { label: 'Following',   value: following,          icon: UserCheck },
+        { label: 'Pending',     value: pendingConnections, icon: UserRoundPen },
+        { label: 'Connections', value: connections,        icon: UserPlus },
     ]
-    
-    const handleUnfollow = async (userId) => {
-        try {
-            const { data } = await api.post('/api/user/unfollow', { id: userId }, {
-            headers: { Authorization: `Bearer ${await getToken()}`}
-            })
-            if (data.success) {
-                toast.success(data.message)
-                dispatch(fetchConnections(await getToken()))
-            } else {
-                toast(data.message)
-            }
-        } catch (error) {
-            toast.error(error.message)
-        }
-    }
-
-    const acceptConnection = async (userId) => {
-        try {
-            const { data } = await api.post('/api/user/accept', { id: userId }, {
-                headers: { Authorization: `Bearer ${await getToken()}`}
-            })
-            if (data.success) {
-                toast.success(data.message)
-                dispatch(fetchConnections(await getToken()))
-            } else {
-                toast(data.message)
-            }
-        } catch (error) {
-            toast.error(error.message)
-        }
-    }
 
     useEffect(() => {
-        getToken().then((token) => {
-            dispatch(fetchConnections(token))
-        })
+        getToken().then((token) => dispatch(fetchConnections(token)))
     }, [])
+
+    /*******************************************************************************
+     * Function:    handleUnfollow
+     * Description: Removes the target user from the current user's following list.
+     * Input:       userId (string) - ID of the user to unfollow
+     * Output:      Following list updated in Redux
+     * Return:      void
+     ******************************************************************************/
+    const handleUnfollow = async (userId) => {
+        try {
+            const token = await getToken()
+            const { data } = await api.post('/api/user/unfollow', { id: userId }, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            if (data.success) {
+                toast.success(data.message)
+                dispatch(fetchConnections(await getToken()))
+            } else {
+                toast.error(data.message)
+            }
+        } catch (err) {
+            toast.error(err.message)
+        }
+    }
+
+    /*******************************************************************************
+     * Function:    handleAccept
+     * Description: Accepts a pending incoming connection request.
+     * Input:       userId (string) - ID of the requesting user
+     * Output:      Connection accepted; Redux state refreshed
+     * Return:      void
+     ******************************************************************************/
+    const handleAccept = async (userId) => {
+        try {
+            const token = await getToken()
+            const { data } = await api.post('/api/user/accept', { id: userId }, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            if (data.success) {
+                toast.success(data.message)
+                dispatch(fetchConnections(await getToken()))
+            } else {
+                toast.error(data.message)
+            }
+        } catch (err) {
+            toast.error(err.message)
+        }
+    }
+
+    /*******************************************************************************
+     * Function:    handleDecline
+     * Description: Declines a pending incoming connection request.
+     * Input:       userId (string) - ID of the requesting user
+     * Output:      Request removed; Redux state refreshed
+     * Return:      void
+     ******************************************************************************/
+    const handleDecline = async (userId) => {
+        try {
+            const token = await getToken()
+            const { data } = await api.post('/api/user/decline', { id: userId }, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            if (data.success) {
+                toast.success(data.message)
+                dispatch(fetchConnections(await getToken()))
+            } else {
+                toast.error(data.message)
+            }
+        } catch (err) {
+            toast.error(err.message)
+        }
+    }
+
+    const activeUsers = tabs.find((t) => t.label === currentTab)?.value ?? []
+
+    const emptyMessages = {
+        Followers:   "Nobody is following you yet.",
+        Following:   "You aren't following anyone yet.",
+        Pending:     "No pending connection requests.",
+        Connections: "You have no connections yet.",
+    }
 
     return (
         <div className='min-h-screen bg-slate-50'>
-            <div className='max-w-6xl mx-auto p-6'>
+            <div className='max-w-5xl mx-auto p-6'>
 
                 {/* Title */}
                 <div className='mb-8'>
-                    <h1 className='text-3xl font-bold text-slate-900 mb-2'>Connections</h1>
-                    <p className='text-slate-600'>Manage your network and discover new connections</p>
+                    <h1 className='text-3xl font-bold text-slate-900 mb-1'>Connections</h1>
+                    <p className='text-slate-500'>Manage your network and discover new connections</p>
                 </div>
 
-                {/* Counts */}
-                <div className='mb-8 flex flex-wrap gap-6'>
-                    {dataArray.map((item, index) => (
-                        <div key={index} className='flex flex-col items-center justify-center gap-1 border h-20 w-40 border-gray-200 bg-white shadow rounded-md'>
-                            <b>{item.value.length}</b>
-                            <p className='text-slate-600'>{item.label}</p>
-                        
-                        </div>
+                {/* Stat cards */}
+                <div className='flex flex-wrap gap-4 mb-6'>
+                    {tabs.map(({ label, value, icon: Icon }) => (
+                        <button
+                            key={label}
+                            onClick={() => setCurrentTab(label)}
+                            className={`flex items-center gap-3 px-5 py-3 bg-white rounded-xl shadow-sm border transition-all cursor-pointer
+                                ${currentTab === label
+                                    ? 'border-primary-300 ring-2 ring-primary-100'
+                                    : 'border-gray-100 hover:border-gray-200'}`}
+                        >
+                            <Icon className={`w-5 h-5 ${currentTab === label ? 'text-primary-500' : 'text-gray-400'}`} />
+                            <div className='text-left'>
+                                <p className={`text-lg font-bold leading-none ${currentTab === label ? 'text-primary-600' : 'text-slate-800'}`}>
+                                    {value.length}
+                                </p>
+                                <p className='text-xs text-slate-500 mt-0.5'>{label}</p>
+                            </div>
+                        </button>
                     ))}
+                </div>
 
-                    {/* Tabs */}
-                    <div className='inline-flex flex-wrap items-center border border-gray-200 rounded-md p-1 bg-white shadow-sm'>
-                        {
-                            dataArray.map((tab) => (
-                                <button onClick={() => setCurrentTab(tab.label)} key={tab.label} className={`cursor-pointer flex items-center px-3 py-1 text-sm rounded-md transition-colors ${currentTab === tab.label ? 'bg-white font-medium text-black' : 'text-gray-500 hover:text-black'}`}>
-                                    <tab.icon className='w-4 h-4'/>
-                                    <span className='ml-1'>{tab.label}</span>
-                                    {tab.count !== undefined && (
-                                        <span className='ml-2 text-xs bg-gray-100 text-gray-700 px-2 py-0.5 rounded-full'>{tab.count}</span>
-                                    )}
-                                </button>
-                            ))
-                        }
+                {/* User list */}
+                {activeUsers.length === 0 ? (
+                    <div className='text-center py-16 text-slate-400'>
+                        <p className='text-lg'>{emptyMessages[currentTab]}</p>
                     </div>
+                ) : (
+                    <div className='flex flex-wrap gap-5'>
+                        {activeUsers.map((user) => (
+                            <div key={user._id} className='w-full max-w-sm flex gap-4 p-5 bg-white shadow-sm border border-gray-100 rounded-xl'>
+                                <img
+                                    src={user.profile_picture}
+                                    alt={user.full_name}
+                                    className='rounded-full w-12 h-12 object-cover flex-shrink-0 shadow-sm'
+                                />
+                                <div className='flex-1 min-w-0'>
+                                    <p className='font-semibold text-slate-800 truncate'>{user.full_name}</p>
+                                    <p className='text-slate-400 text-sm'>@{user.username}</p>
+                                    {user.bio && (
+                                        <p className='text-sm text-gray-500 mt-1 line-clamp-2'>{user.bio}</p>
+                                    )}
+                                    <div className='flex flex-wrap gap-2 mt-3'>
+                                        <button
+                                            onClick={() => navigate(`/profile/${user._id}`)}
+                                            className='px-3 py-1.5 text-sm rounded-lg bg-gradient-to-r from-primary-500 to-primary-700 hover:from-primary-600 hover:to-primary-700 text-white transition cursor-pointer'
+                                        >
+                                            View Profile
+                                        </button>
 
-                    {/* Connections */}
-                    <div className='flex flex-wrap gap-6 mt-6'>
-                        {dataArray.find((item) => item.label === currentTab).value.map((user) => (
-                            <div key={user._id} className='w-full max-w-88 flex gap-5 p-6 bg-white shadow rounded-md'>
-                                <img src={user.profile_picture} alt="" className='rounded-full w-12 h-12 shadow-md mx-auto'/>
-                                <div className='flex-1'>
-                                    <p className='font-medium text-slate-700'>{user.full_name}</p>
-                                    <p className='text-slate-500'>@{user.username}</p>
-                                    <p className='text-sm text-gray-600'>{user.bio.slice(0, 30)}</p>
-                                    <div className='flex max-sm:flex-col gap-2 mt-4'>
-                                        {
-
-                                            <button onClick={() => navigate(`/profile/${user._id}`)} className='w-full p-2 text-sm rounded bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 active:scale-95 transition text-white cursor-pointer'>
-                                                View Profile
+                                        {currentTab === 'Following' && (
+                                            <button
+                                                onClick={() => handleUnfollow(user._id)}
+                                                className='px-3 py-1.5 text-sm rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 transition cursor-pointer'
+                                            >
+                                                Unfollow
                                             </button>
-                                        }
-                                        {
-                                            currentTab === 'Following' && (
-                                                <button onClick={() => handleUnfollow(user._id)} className='w-full p-2 text-sm rounded bg-slate-100 hover:bg-slate-200 text-black active:scale-95 transition cursor-pointer'>
-                                                    Unfollow
-                                                </button>
-                                            )
-                                        }
-                                        {
-                                            currentTab === 'Pending' && (
-                                                <button onClick={() => acceptConnection(user._id)} className='w-full p-2 text-sm rounded bg-slate-100 hover:bg-slate-200 text-black active:scale-95 transition cursor-pointer'>
+                                        )}
+
+                                        {currentTab === 'Pending' && (
+                                            <>
+                                                <button
+                                                    onClick={() => handleAccept(user._id)}
+                                                    className='px-3 py-1.5 text-sm rounded-lg bg-green-500 hover:bg-green-600 text-white transition cursor-pointer'
+                                                >
                                                     Accept
                                                 </button>
-                                            )
-                                        }
-                                        {
-                                            currentTab === 'Connections' && (
-                                                <button onClick={() => navigate(`/messages/${user._id}`)} className='w-full p-2 text-sm rounded bg-slate-100 hover:bg-slate-200 text-slate-800 active:scale-95 transition cursor-pointer flex items-center justify-center gap-1'>
-                                                    <MessageSquare className='w-4 h-4'/>
-                                                    Message
+                                                <button
+                                                    onClick={() => handleDecline(user._id)}
+                                                    className='px-3 py-1.5 text-sm rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 transition cursor-pointer'
+                                                >
+                                                    Decline
                                                 </button>
-                                            )
-                                        }
+                                            </>
+                                        )}
+
+                                        {currentTab === 'Connections' && (
+                                            <button
+                                                onClick={() => navigate(`/messages/${user._id}`)}
+                                                className='px-3 py-1.5 text-sm rounded-lg bg-gray-100 hover:bg-gray-200 text-slate-700 transition cursor-pointer flex items-center gap-1.5'
+                                            >
+                                                <MessageSquare className='w-4 h-4' /> Message
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             </div>
                         ))}
                     </div>
-
-                </div>
-
+                )}
             </div>
         </div>
     )

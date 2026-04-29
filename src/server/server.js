@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        server.js
+ * Description: Express server entry point. Initializes middleware, connects to
+ *              the database, and mounts all API route handlers.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
@@ -10,6 +20,9 @@ import postRouter from './routes/postRoutes.js';
 import storyRouter from './routes/storyRoutes.js';
 import messageRouter from './routes/messagesRoutes.js';
 import groupRouter from './routes/groupRoutes.js';
+import eventRouter from './routes/eventRoutes.js';
+import sessionRouter from './routes/sessionRoutes.js'
+import dashboardRouter from './routes/dashboardRoutes.js'
 
 const app = express();
 
@@ -26,6 +39,9 @@ app.use('/api/post', postRouter);
 app.use('/api/story', storyRouter);
 app.use('/api/message', messageRouter);
 app.use('/api/group', groupRouter);
+app.use('/api/event', eventRouter);
+app.use('/api/session', sessionRouter);
+app.use('/api/dashboard', dashboardRouter);
 
 const PORT = process.env.PORT || 4000;
 

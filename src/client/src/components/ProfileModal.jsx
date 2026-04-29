@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        ProfileModal.jsx
+ * Description: Modal component for editing the authenticated user's profile,
+ *              including bio, location, courses, subjects, and profile images.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React, { useState } from 'react'
 import { dummyUserData } from '../assets/assets'
 import { Pencil } from 'lucide-react'
@@ -6,6 +16,14 @@ import { updateUser } from '../features/user/userSlice'
 import toast from 'react-hot-toast'
 import { useAuth } from '@clerk/clerk-react'
 
+/*******************************************************************************
+ * Function:    ProfileModal
+ * Description: Renders an editable profile form modal pre-filled with the
+ *              authenticated user's current data from the Redux store.
+ * Input:       setShowEdit (function) - closes the modal when done editing
+ * Output:      Profile updated via Redux updateUser thunk; modal closed
+ * Return:      JSX.Element
+ ******************************************************************************/
 const ProfileModal = ({setShowEdit}) => {
 
     const dispatch = useDispatch()
@@ -19,17 +37,39 @@ const ProfileModal = ({setShowEdit}) => {
         profile_picture: null,
         cover_photo: null,
         full_name: user.full_name,
+        courses: user.courses || [],
+        subjects: user.subjects || []
     })
 
-    const handleSaveProfile = async (e) => {
-        e.preventDefault()
+    const [coursesInput, setCoursesInput] = useState(
+        (user.courses || []).join(", ")
+    )
+
+    const [subjectsInput, setSubjectsInput] = useState(
+        (user.subjects || []).join(", ")
+    )
+
+    const handleSaveProfile = async () => {
+        const parsedCourses = coursesInput
+            .split(",")
+            .map(c => c.trim())
+            .filter(Boolean)
+
+        const parsedSubjects = subjectsInput
+            .split(",")
+            .map(s => s.trim())
+            .filter(Boolean)
+
         try {
             const userData = new FormData()
-            const { full_name, username, bio, location, profile_picture, cover_photo } = editForm
+            const { full_name, username, bio, location, profile_picture, cover_photo, courses, subjects } = editForm
             userData.append('username', username)
             userData.append('bio', bio)
             userData.append('location', location)
             userData.append('full_name', full_name)
+
+            userData.append('courses', JSON.stringify(parsedCourses))
+            userData.append('subjects', JSON.stringify(parsedSubjects))
             profile_picture && userData.append('profile', profile_picture)
             cover_photo && userData.append('cover', cover_photo)
 
@@ -48,9 +88,19 @@ const ProfileModal = ({setShowEdit}) => {
                 <div className='bg-white rounded-lg shadow p-6'>
                     <h1 className='text-2xl font-bold text-gray-900 mb-6'>Edit Profile</h1>
 
-                    <form className='space-y-4' onSubmit={e => toast.promise(
-                        handleSaveProfile(e), { loading: 'Saving...' }
-                    )}>
+                    <form className='space-y-4'
+                        onSubmit={(e) => {
+                            e.preventDefault()
+                            toast.promise(
+                                handleSaveProfile(),
+                                {
+                                    loading: 'Saving...',
+                                    success: 'Profile updated!',
+                                    error: 'Failed to update profile'
+                                }
+                            )
+                        }}
+                    >
                     {/* <form className='space-y-4' onSubmit={(e) => {
                         e.preventDefault()
                         toast.promise(
@@ -82,7 +132,7 @@ const ProfileModal = ({setShowEdit}) => {
                                 Cover Photo
                                 <input hidden type="file" accept="image/*" id='cover_photo' className='w-full p-3 border border-gray-200 rounded-lg' onChange={(e) => setEditForm({...editForm, cover_photo: e.target.files[0]})}/>
                                 <div className='group/cover relative'>
-                                    <img src={editForm.cover_photo ? URL.createObjectURL(editForm.cover_photo) : user.cover_photo} alt="" className='w-80 h-40 rounded-lg bg-gradient-to-r from-indigo-200 via-purple-200 to-pink-200 object-cover mt-2'/>
+                                    <img src={editForm.cover_photo ? URL.createObjectURL(editForm.cover_photo) : user.cover_photo} alt="" className='w-80 h-40 rounded-lg bg-gradient-to-r from-primary-200 via-primary-200 to-pink-200 object-cover mt-2'/>
 
                                     <div className='absolute hidden group-hover/cover:flex top-0 left-0 right-0 bottom-0 bg-black/20 rounded-lg items-center justify-center'>
                                         <Pencil className='w-5 h-5 text-white' />
@@ -111,6 +161,34 @@ const ProfileModal = ({setShowEdit}) => {
                             <textarea rows={3} className='w-full p-3 border border-gray-200 rounded-lg' placeholder='Please enter a short bio' onChange={(e) => setEditForm({...editForm, bio: e.target.value})} value={editForm.bio}/>
                         </div>
 
+                        {/* Courses */}
+                        <div>
+                            <label className='block text-sm font-medium text-gray-700 mb-1'>
+                                Courses
+                            </label>
+                            <input
+                                type="text"
+                                className="w-full p-3 border border-gray-200 rounded-lg"
+                                placeholder="e.g. CS101, Math 202"
+                                value={coursesInput}
+                                onChange={(e) => setCoursesInput(e.target.value)}
+                            />
+                            <p className="text-xs text-gray-400 mt-1">Separate with commas</p>
+                        </div>
+
+                        {/* Subjects */}
+                        <div>
+                            <label className='block text-sm font-medium text-gray-700 mb-1'>
+                                Subjects
+                            </label>
+                            <input
+                                type="text"
+                                className="w-full p-3 border border-gray-200 rounded-lg"
+                                placeholder="e.g. Algorithms, Physics"
+                                value={subjectsInput}
+                                onChange={(e) => setSubjectsInput(e.target.value)}
+                            />
+                        </div>
 
                         <div>
                             <label className='block text-sm font-medium text-gray-700 mb-1'>
@@ -122,7 +200,7 @@ const ProfileModal = ({setShowEdit}) => {
                         <div className='flex justify-end space-x-3 pt-6'>
                             <button onClick={() => setShowEdit(false)}  type='button' className='px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer'>Cancel</button>
 
-                            <button type='submit' className='px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg hover:from-indigo-600 hover:to-purple-700 transition cursor-pointer'>Save Changes</button>
+                            <button type='submit' className='px-4 py-2 bg-gradient-to-r from-primary-500 to-primary-700 text-white rounded-lg hover:from-primary-600 hover:to-primary-700 transition cursor-pointer'>Save Changes</button>
                         </div>
                     </form>
                 </div>

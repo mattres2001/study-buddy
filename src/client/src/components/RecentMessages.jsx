@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        RecentMessages.jsx
+ * Description: Sidebar widget listing the authenticated user's most recent
+ *              message conversations with links to open each chat.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React, { useEffect, useState } from 'react'
 import { dummyRecentMessagesData } from '../assets/assets'
 import { Link } from 'react-router-dom'
@@ -6,6 +16,14 @@ import { useUser, useAuth } from '@clerk/clerk-react'
 import api from '../api/axios'
 import toast from 'react-hot-toast'
 
+/*******************************************************************************
+ * Function:    RecentMessages
+ * Description: Fetches and renders a list of the authenticated user's most
+ *              recent message conversations in the sidebar.
+ * Input:       None (reads user from Clerk and fetches from API)
+ * Output:      Rendered recent message list with links to chat views
+ * Return:      JSX.Element
+ ******************************************************************************/
 const RecentMessages = () => {
     
     const [ messages, setMessages ] = useState([])
@@ -64,7 +82,7 @@ const RecentMessages = () => {
                                 </div>
                                 <div className='flex justify-between'>
                                     <p className='text-gray-500'>{message.text ? message.text : 'Media'}</p>
-                                    {!message.seen && <p className='bg-indigo-500 text-white w-4 h-4 flex items-center justify-center rounded-full text-[10px]'>1</p>}
+                                    {!message.seen && <p className='bg-primary-500 text-white w-4 h-4 flex items-center justify-center rounded-full text-[10px]'>1</p>}
                                 </div>
                             </div>
                         </Link>

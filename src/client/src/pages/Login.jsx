@@ -1,8 +1,26 @@
+/*******************************************************************************
+ * File:        Login.jsx
+ * Description: Authentication landing page showing the app logo, tagline, and
+ *              Clerk sign-in/sign-up buttons.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import React from 'react'
 import { assets } from '../assets/assets'
 import { Star } from 'lucide-react'
 import { SignIn } from '@clerk/clerk-react'
 
+/*******************************************************************************
+ * Function:    Login
+ * Description: Renders the unauthenticated landing page with the app logo,
+ *              tagline, and Clerk SignIn/SignUp buttons.
+ * Input:       None
+ * Output:      Rendered login/signup landing page
+ * Return:      JSX.Element
+ ******************************************************************************/
 const Login = () => {
     return (
         <div className='min-h-screen flex flex-col md:flex-row'>
@@ -27,10 +45,10 @@ const Login = () => {
                         </div>
                     </div>
                     <h1 className='text-3xl md:text-6xl md:pb-2 font-bold bg-gradient-to-r 
-                    from-indigo-950 to-indigo-800 bg-clip-text text-transparent'>
+                    from-primary-900 to-primary-600 bg-clip-text text-transparent'>
                         Let's study together!
                     </h1>
-                    <p className='text-x1 md:text-3x1 text-indigo-900 max-w-72 md:max-w-md'>
+                    <p className='text-x1 md:text-3x1 text-primary-900 max-w-72 md:max-w-md'>
                         Connect with other students on Study Buddy
                     </p>
                 </div>

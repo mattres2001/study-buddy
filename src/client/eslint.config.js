@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        eslint.config.js
+ * Description: ESLint flat configuration for the React client, applying
+ *              recommended JS rules, React Hooks rules, and React Refresh rules.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import js from '@eslint/js'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'

@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * File:        User.js
+ * Description: Mongoose schema and model definition for the User document,
+ *              storing profile data, social connections, and group memberships.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
@@ -12,7 +22,9 @@ const userSchema = new mongoose.Schema({
     followers: [{type: String, ref: 'User'}],
     following: [{type: String, ref: 'User'}],
     connections: [{type: String, ref: 'User'}],
-    groups: [{type: String, ref: 'Group'}]
+    groups: [{type: String, ref: 'Group'}],
+    courses: [{type: String}],
+    subjects: [{type: String}]
 }, {timestamps: true, minimize: false});
 
 const User = mongoose.model('User', userSchema);

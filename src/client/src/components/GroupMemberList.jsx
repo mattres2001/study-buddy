@@ -1,9 +1,29 @@
-import React from 'react'
+/*******************************************************************************
+ * File:        GroupMemberList.jsx
+ * Description: Component that renders the list of members in a group with
+ *              links to their profiles and an invite member option.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import MemberInviteModal from './MemberInviteModal'
 
+/*******************************************************************************
+ * Function:    GroupMemberList
+ * Description: Renders a scrollable list of group member avatars and names,
+ *              with a button to open the MemberInviteModal.
+ * Input:       group (object) - group data including populated members array
+ * Output:      Rendered member list with invite controls
+ * Return:      JSX.Element
+ ******************************************************************************/
 const GroupMemberList = ({ group }) => {
 
     const navigate = useNavigate()
+    const [showInvite, setShowInvite] = useState(false)
 
     if (!group?.members || group.members.length === 0) {
         return (
@@ -17,9 +37,18 @@ const GroupMemberList = ({ group }) => {
     return (
         <div className="bg-white rounded-lg shadow p-4 w-1/2">
             {/* Header */}
-            <h2 className="text-lg font-semibold mb-3">
-                Group Members ({group.members.length})
-            </h2>
+            <div className="flex items-center mb-3">
+                <h2 className="text-lg font-semibold">
+                    Group Members ({group.members.length})
+                </h2>
+
+                <button
+                    onClick={() => setShowInvite(true)}
+                    className="ml-auto px-3 py-1.5 text-sm bg-primary-500 text-white rounded-lg hover:bg-primary-600"
+                >
+                    Invite
+                </button>
+            </div>
 
             {/* Vertical member list */}
             <div className="flex flex-col space-y-2 max-h-[80vh] overflow-y-auto">
@@ -33,7 +62,7 @@ const GroupMemberList = ({ group }) => {
                     <img
                         src={member.profile_picture || '/default-avatar.png'}
                         alt={member.username}
-                        className="w-10 h-10 rounded-full border border-indigo-400 object-cover"
+                        className="w-10 h-10 rounded-full border border-primary-400 object-cover"
                     />
 
                     {/* Names */}
@@ -54,6 +83,14 @@ const GroupMemberList = ({ group }) => {
                 </div>
                 ))}
             </div>
+
+            {showInvite && (
+                <MemberInviteModal
+                    group={group}
+                    onClose={() => setShowInvite(false)}
+                />
+            )}
+
         </div>
     )
 }

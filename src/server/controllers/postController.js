@@ -1,9 +1,27 @@
+/*******************************************************************************
+ * File:        postController.js
+ * Description: Express controller handling post creation, feed retrieval,
+ *              individual post lookup, and like/unlike toggling.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import fs from 'fs'
 import imagekit from '../configs/imagekit.js'
 import Post from '../models/Post.js'
 import User from '../models/User.js'
 
-// Add Post
+/*******************************************************************************
+ * Function:    addPost
+ * Description: Creates a new post for the authenticated user, optionally
+ *              uploading images to ImageKit.
+ * Input:       req (Express Request) - body: { content, post_type }; files: images
+ *              res (Express Response)
+ * Output:      New Post document saved to the database
+ * Return:      { success: boolean, message: string }
+ ******************************************************************************/
 export const addPost = async (req, res) => {
     try {
         const { userId } = req.auth();
@@ -51,7 +69,15 @@ export const addPost = async (req, res) => {
     }
 }
 
-// Get Posts
+/*******************************************************************************
+ * Function:    getFeedPosts
+ * Description: Retrieves posts from the authenticated user and their
+ *              connections and followings, sorted newest first.
+ * Input:       req (Express Request) - authenticated request with Clerk userId
+ *              res (Express Response)
+ * Output:      JSON response with feed post list
+ * Return:      { success: boolean, posts: Post[] }
+ ******************************************************************************/
 export const getFeedPosts = async (req, res) => {
     try {
         const { userId } = req.auth();
@@ -68,7 +94,14 @@ export const getFeedPosts = async (req, res) => {
     }
 }
 
-// Get Single Post
+/*******************************************************************************
+ * Function:    getPost
+ * Description: Retrieves a single post by its ID, including the author's data.
+ * Input:       req (Express Request) - params: { postId: string }
+ *              res (Express Response)
+ * Output:      JSON response with post document
+ * Return:      { success: boolean, post: Post }
+ ******************************************************************************/
 export const getPost = async (req, res) => {
     try {
         const { postId } = req.params;
@@ -88,7 +121,15 @@ export const getPost = async (req, res) => {
     }
 }
 
-// Like Post
+/*******************************************************************************
+ * Function:    likePost
+ * Description: Toggles a like on a post. Adds the user's ID if not liked,
+ *              removes it if already liked.
+ * Input:       req (Express Request) - body: { postId: string }
+ *              res (Express Response)
+ * Output:      Updated Post document in the database
+ * Return:      { success: boolean, message: string }
+ ******************************************************************************/
 export const likePost = async (req, res) => {
     try {
         const { userId } = req.auth();
