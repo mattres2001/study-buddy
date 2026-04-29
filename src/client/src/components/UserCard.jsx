@@ -95,12 +95,12 @@ const UserCard = ({user, sharedCourses = [], sharedSubjects = [], mutualConnecti
             {(sharedCourses.length > 0 || sharedSubjects.length > 0 || mutualConnectionsCount > 0) && (
                 <div className='mt-3 flex flex-wrap gap-1 justify-center'>
                     {mutualConnectionsCount > 0 && (
-                        <span className='text-xs bg-indigo-50 text-indigo-600 border border-indigo-100 rounded-full px-2 py-0.5'>
+                        <span className='text-xs bg-primary-50 text-primary-600 border border-primary-100 rounded-full px-2 py-0.5'>
                             {mutualConnectionsCount} mutual {mutualConnectionsCount === 1 ? 'connection' : 'connections'}
                         </span>
                     )}
                     {sharedCourses.length > 0 && (
-                        <span className='text-xs bg-purple-50 text-purple-600 border border-purple-100 rounded-full px-2 py-0.5'>
+                        <span className='text-xs bg-primary-50 text-primary-700 border border-primary-100 rounded-full px-2 py-0.5'>
                             {sharedCourses.length} shared {sharedCourses.length === 1 ? 'course' : 'courses'}
                         </span>
                     )}
@@ -114,7 +114,7 @@ const UserCard = ({user, sharedCourses = [], sharedSubjects = [], mutualConnecti
 
             <div className='flex mt-4 gap-2'>
                 {/* Follow Button */}
-                <button onClick={handleFollow} disabled={currentUser?.following.includes(user._id)} className='w-full py-3 rounded-md flex justify-center items-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 active:scale-95 transition text-white cursor-pointer'>
+                <button onClick={handleFollow} disabled={currentUser?.following.includes(user._id)} className='w-full py-3 rounded-md flex justify-center items-center gap-2 bg-gradient-to-r from-primary-500 to-primary-700 hover:from-primary-600 hover:to-primary-700 active:scale-95 transition text-white cursor-pointer'>
                     <UserPlus className='w-4 h-4'/> {currentUser?.following.includes(user._id) ? 'Following' : 'Follow'}
                 </button>
 

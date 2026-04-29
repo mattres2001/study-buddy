@@ -21,7 +21,7 @@ import React from 'react'
  * Output:      Rendered event banner
  * Return:      JSX.Element
  ******************************************************************************/
-const UpcomingEventBanner = ({ event, group, isAdmin, showGroupInfo }) => {
+const UpcomingEventBanner = ({ event, group, isAdmin, showGroupInfo, hasRSVPed }) => {
 
     const startTime = new Date(event.started_at)
     const isCancelled = event.status === "cancelled"
@@ -103,7 +103,7 @@ const UpcomingEventBanner = ({ event, group, isAdmin, showGroupInfo }) => {
                         )}
                     </div>
 
-                    {/* RIGHT SIDE (button stays the same) */}
+                    {/* RIGHT SIDE */}
                     <button
                         disabled={isCancelled}
                         className={`font-semibold px-4 py-2 rounded-lg transition
@@ -111,14 +111,18 @@ const UpcomingEventBanner = ({ event, group, isAdmin, showGroupInfo }) => {
                                 ? "bg-gray-400 text-gray-200 cursor-not-allowed"
                                 : isAdmin
                                     ? "bg-white text-black hover:bg-gray-200"
-                                    : "bg-red-500 text-white hover:bg-red-600"
+                                    : hasRSVPed
+                                        ? "bg-white text-primary-700 hover:bg-primary-50"
+                                        : "bg-primary-500 text-white hover:bg-primary-600"
                             }`}
                     >
                         {isCancelled
                             ? "Cancelled"
                             : isAdmin
                                 ? "Edit Event"
-                                : "RSVP"
+                                : hasRSVPed
+                                    ? "✓ Going"
+                                    : "RSVP"
                         }
                     </button>
 

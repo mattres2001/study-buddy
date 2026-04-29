@@ -44,7 +44,7 @@ const GroupMemberList = ({ group }) => {
 
                 <button
                     onClick={() => setShowInvite(true)}
-                    className="ml-auto px-3 py-1.5 text-sm bg-indigo-500 text-white rounded-lg hover:bg-indigo-600"
+                    className="ml-auto px-3 py-1.5 text-sm bg-primary-500 text-white rounded-lg hover:bg-primary-600"
                 >
                     Invite
                 </button>
@@ -62,7 +62,7 @@ const GroupMemberList = ({ group }) => {
                     <img
                         src={member.profile_picture || '/default-avatar.png'}
                         alt={member.username}
-                        className="w-10 h-10 rounded-full border border-indigo-400 object-cover"
+                        className="w-10 h-10 rounded-full border border-primary-400 object-cover"
                     />
 
                     {/* Names */}

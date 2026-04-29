@@ -192,7 +192,7 @@
 //                                         onClick={() => setEditForm({ ...editForm, visibility: 'public' })}
 //                                         className={`px-4 py-2 rounded-lg border transition ${
 //                                             editForm.visibility === 'public'
-//                                                 ? 'bg-indigo-500 text-white border-indigo-500'
+//                                                 ? 'bg-primary-500 text-white border-primary-500'
 //                                                 : 'bg-white text-gray-700 border-gray-300'
 //                                         }`}
 //                                     >
@@ -204,7 +204,7 @@
 //                                         onClick={() => setEditForm({ ...editForm, visibility: 'private' })}
 //                                         className={`px-4 py-2 rounded-lg border transition ${
 //                                             editForm.visibility === 'private'
-//                                                 ? 'bg-indigo-500 text-white border-indigo-500'
+//                                                 ? 'bg-primary-500 text-white border-primary-500'
 //                                                 : 'bg-white text-gray-700 border-gray-300'
 //                                         }`}
 //                                     >
@@ -233,7 +233,7 @@
                         // <div className='flex justify-end space-x-3 pt-6'>
                         //     <button onClick={() => setShowModal(false)}  type='button' className='px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer'>Cancel</button>
 
-                        //     <button type='submit' className='px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg hover:from-indigo-600 hover:to-purple-700 transition cursor-pointer'>Save Changes</button>
+                        //     <button type='submit' className='px-4 py-2 bg-gradient-to-r from-primary-500 to-primary-700 text-white rounded-lg hover:from-primary-600 hover:to-primary-700 transition cursor-pointer'>Save Changes</button>
 //                         </div>
 //                     </form>
 //                 </div>
@@ -378,7 +378,7 @@ const CreateEventModal = ({ group, groups = [], setShowModal, onCreated }) => {
                                     key={v}
                                     type="button"
                                     onClick={() => setEditForm({ ...editForm, visibility: v })}
-                                    className={`px-4 py-2 border rounded-lg ${editForm.visibility === v && 'bg-indigo-500 text-white'}`}
+                                    className={`px-4 py-2 border rounded-lg ${editForm.visibility === v && 'bg-primary-500 text-white'}`}
                                 >
                                     {v}
                                 </button>
@@ -394,7 +394,7 @@ const CreateEventModal = ({ group, groups = [], setShowModal, onCreated }) => {
                         <div className='flex justify-end space-x-3 pt-6'>
                             <button onClick={() => setShowModal(false)}  type='button' className='px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer'>Cancel</button>
 
-                            <button type='submit' className='px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg hover:from-indigo-600 hover:to-purple-700 transition cursor-pointer'>Save Changes</button>
+                            <button type='submit' className='px-4 py-2 bg-gradient-to-r from-primary-500 to-primary-700 text-white rounded-lg hover:from-primary-600 hover:to-primary-700 transition cursor-pointer'>Save Changes</button>
                         </div>
                     </form>
                 </div>

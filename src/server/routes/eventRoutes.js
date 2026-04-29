@@ -9,11 +9,12 @@
  *
  ******************************************************************************/
 import express from 'express';
-import { 
+import {
     createEvent,
     getEvents,
     updateEvent,
-    deleteEvent
+    deleteEvent,
+    rsvpEvent
 } from '../controllers/eventController.js'
 import { protect } from '../middleware/auth.js';
 import { upload } from '../configs/multer.js';
@@ -25,5 +26,6 @@ eventRouter.post('/create', protect, upload.fields([
 ]), createEvent);
 eventRouter.get('/:groupId', protect, getEvents);
 eventRouter.patch('/:eventId/update', protect, updateEvent)
+eventRouter.post('/:eventId/rsvp', protect, rsvpEvent)
 eventRouter.delete('/:eventId', protect, deleteEvent)
 export default eventRouter

@@ -9,8 +9,9 @@
  * ----------   ---------   -------     -------------------------
  *
  ******************************************************************************/
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 import Session from '../models/Session.js'
+import User from '../models/User.js'
 
 /*******************************************************************************
  * Function:    startSession
@@ -317,3 +318,45 @@ export const updateDescription = async (req, res) => {
         res.status(500).json({ success: false, message: err.message })
     }
 }
+
+/*******************************************************************************
+ * Function:    getActiveSessionsByGroup
+ * Description: Returns active/starting-soon sessions for all of the user's
+ *              groups, keyed by groupId, so the sidebar can show live status
+ *              and hover tooltips.
+ * Input:       req (Express Request) - authenticated request with Clerk userId
+ *              res (Express Response)
+ * Output:      JSON response with sessions grouped by groupId
+ * Return:      { success: boolean, sessionsByGroup: Record<string, Session[]> }
+ ******************************************************************************/
+export const getActiveSessionsByGroup = async (req, res) => {
+    try {
+        const { userId } = req.auth()
+        const user = await User.findById(userId, { groups: 1 })
+        if (!user?.groups?.length) return res.json({ success: true, sessionsByGroup: {} })
+
+        const now = new Date()
+        const fiveMinFromNow = new Date(now.getTime() + 5 * 60 * 1000)
+
+        const activeSessions = await Session.find(
+            {
+                groupId: { $in: user.groups },
+                started_at: { $lte: fiveMinFromNow },
+                ended_at: { $gte: now }
+            },
+            { groupId: 1, title: 1, started_at: 1, ended_at: 1 }
+        )
+
+        const sessionsByGroup = {}
+        for (const s of activeSessions) {
+            if (!sessionsByGroup[s.groupId]) sessionsByGroup[s.groupId] = []
+            sessionsByGroup[s.groupId].push(s)
+        }
+
+        res.json({ success: true, sessionsByGroup })
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message })
+    }
+}
+
+

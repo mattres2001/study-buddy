@@ -42,7 +42,7 @@ const UserProfileInfo = ({ user, posts, profileId, setShowEdit }) => {
                             {user.courses?.map((course, i) => (
                                 <span
                                     key={`course-${i}`}
-                                    className="text-xs px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 font-medium"
+                                    className="text-xs px-3 py-1 rounded-full bg-primary-100 text-primary-700 font-medium"
                                 >
                                     🎓 {course}
                                 </span>

@@ -100,7 +100,7 @@ const MemberInviteModal = ({ group, onClose }) => {
 
                                 <button
                                     onClick={() => handleInvite(user._id)}
-                                    className="text-sm px-3 py-1 bg-indigo-500 text-white rounded"
+                                    className="text-sm px-3 py-1 bg-primary-500 text-white rounded"
                                 >
                                     Invite
                                 </button>

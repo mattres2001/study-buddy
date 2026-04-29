@@ -8,12 +8,11 @@
  * ----------   ---------   -------     -------------------------
  *
  ******************************************************************************/
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Sidebar from '../components/Sidebar'
 import GroupBar from '../components/GroupBar'
 import { Outlet } from 'react-router-dom'
 import { Menu, X, Users } from 'lucide-react'
-import { dummyUserData } from '../assets/assets'
 import Loading from '../components/Loading'
 import { useSelector } from 'react-redux'
 
@@ -34,7 +33,7 @@ const Layout = () => {
     return user ? (
         <div className='w-full flex h-screen'>
             <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-            <div className='flex-1 bg-slate-50 pr-0'>
+            <div className='flex-1 bg-slate-50 pr-0 overflow-y-auto'>
                 <Outlet />
             </div>
             {/* GroupBar is a flex sibling so the layout spacing mirrors Sidebar */}

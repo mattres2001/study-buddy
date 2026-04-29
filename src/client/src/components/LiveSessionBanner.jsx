@@ -12,6 +12,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useAuth } from '@clerk/clerk-react'
 import api from '../api/axios'
 import toast from 'react-hot-toast'
+import AvatarStack from './AvatarStack'
 
 /*******************************************************************************
  * Function:    LiveSessionBanner
@@ -119,10 +120,13 @@ const LiveSessionBanner = ({ sessions, setSessions, group, isAdmin, showGroupInf
                     </span>
                 )}
 
-                {liveSession.participants && (
-                    <span className="text-sm opacity-90">
-                        👥 {liveSession.participants.length} participant{liveSession.participants.length !== 1 ? 's' : ''}
-                    </span>
+                {liveSession.participants?.length > 0 && (
+                    <div className="flex items-center gap-2 mt-1">
+                        <AvatarStack userIds={liveSession.participants} max={5} size="sm" />
+                        <span className="text-sm opacity-90">
+                            {liveSession.participants.length} participant{liveSession.participants.length !== 1 ? 's' : ''}
+                        </span>
+                    </div>
                 )}
 
                 <div

@@ -11,6 +11,7 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '@clerk/clerk-react'
 import api from '../api/axios'
+import AvatarStack from './AvatarStack'
 
 /*******************************************************************************
  * Function:    EventDetailsModal
@@ -28,11 +29,11 @@ const EventDetailsModal = ({ event, setShowModal, isAdmin, setEvents, setSelecte
     if (!event) return null
 
     const { userId, getToken } = useAuth()
-    const isCreator = userId === event.started_by
-    const hasRSVPed = event.rsvps?.includes(userId)
     const isCancelled = event.status === "cancelled"
+    const hasRSVPed = event.rsvp?.includes(userId)
 
     const [isEditing, setIsEditing] = useState(false)
+    const [rsvpLoading, setRsvpLoading] = useState(false)
 
     const [editForm, setEditForm] = useState({
         title: event.title || "",
@@ -53,18 +54,27 @@ const EventDetailsModal = ({ event, setShowModal, isAdmin, setEvents, setSelecte
             })
         }
     }, [event])
-    
+
     const handleRSVP = async () => {
         try {
-        await api.post(`/events/${event._id}/rsvp`)
-        // ideally refetch or update state here
+            setRsvpLoading(true)
+            const token = await getToken()
+            const { data } = await api.post(
+                `/api/event/${event._id}/rsvp`,
+                {},
+                { headers: { Authorization: `Bearer ${token}` } }
+            )
+            if (data.success) {
+                setSelectedEvent?.(data.event)
+                setEvents?.(prev =>
+                    prev.map(ev => ev._id === data.event._id ? data.event : ev)
+                )
+            }
         } catch (err) {
-        console.error(err)
+            console.error(err)
+        } finally {
+            setRsvpLoading(false)
         }
-    }
-
-    const handleEdit = () => {
-        // open edit modal or route to edit page
     }
 
 
@@ -200,9 +210,14 @@ const EventDetailsModal = ({ event, setShowModal, isAdmin, setEvents, setSelecte
                         )
                     )}
 
-                    {/* RSVP */}
-                    <div className="text-sm text-gray-600 mb-6">
-                        👥 {event.rsvp?.length || 0} RSVP{event.rsvp?.length !== 1 ? "s" : ""}
+                    {/* RSVP count + avatars */}
+                    <div className="flex items-center gap-3 mb-6">
+                        <AvatarStack userIds={event.rsvp || []} max={6} size="md" />
+                        <span className="text-sm text-gray-500">
+                            {event.rsvp?.length
+                                ? `${event.rsvp.length} going`
+                                : 'No RSVPs yet'}
+                        </span>
                     </div>
 
                     {/* Footer */}
@@ -349,22 +364,22 @@ const EventDetailsModal = ({ event, setShowModal, isAdmin, setEvents, setSelecte
                                     </button>
                                 )}
 
-                                {/* RSVP (NOT CREATOR) */}
-                                <button
-                                    onClick={handleRSVP}
-                                    disabled={hasRSVPed || isCancelled}
-                                    className={`px-4 py-2 rounded-lg transition ${
-                                        hasRSVPed || isCancelled
-                                            ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                                            : "bg-red-50 text-red-600 hover:bg-red-100"
-                                    }`}
-                                >
-                                    {isCancelled
-                                        ? "Cancelled"
-                                        : hasRSVPed
-                                            ? "RSVPed"
-                                            : "RSVP"}
-                                </button>
+                                {/* RSVP toggle */}
+                                {!isCancelled && (
+                                    <button
+                                        onClick={handleRSVP}
+                                        disabled={rsvpLoading}
+                                        className={`px-4 py-2 rounded-lg font-medium transition ${
+                                            rsvpLoading
+                                                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                                                : hasRSVPed
+                                                    ? "bg-primary-600 text-white hover:bg-primary-700"
+                                                    : "bg-primary-50 text-primary-600 hover:bg-primary-100"
+                                        }`}
+                                    >
+                                        {rsvpLoading ? "..." : hasRSVPed ? "✓ Going" : "RSVP"}
+                                    </button>
+                                )}
                                 
                             </div>
 

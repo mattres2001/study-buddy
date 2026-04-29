@@ -121,7 +121,7 @@ const CreatePost = () => {
                                 success: <p>Post Added</p>,
                                 error: <p>Post Not Added</p>,
                             }
-                        )} className='text-sm bg-gradient-to-r from-indigo-500 to-purple-600 hover:fromt-indigo-600 hover:to-purple-700 active:scale-95 transition text-white font-medium px-8 py-2 rounded-md cursor-pointer'>
+                        )} className='text-sm bg-gradient-to-r from-primary-500 to-primary-700 hover:fromt-primary-600 hover:to-primary-700 active:scale-95 transition text-white font-medium px-8 py-2 rounded-md cursor-pointer'>
                             Publish Post
                         </button>
                     </div>

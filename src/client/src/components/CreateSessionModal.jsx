@@ -210,7 +210,7 @@ const CreateSessionModal = ({ group, groups = [], setShowModal, onCreated }) => 
                         <div className='flex justify-end space-x-3 pt-6'>
                             <button onClick={() => setShowModal(false)}  type='button' className='px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer'>Cancel</button>
 
-                            <button type='submit' className='px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg hover:from-indigo-600 hover:to-purple-700 transition cursor-pointer'>Save Changes</button>
+                            <button type='submit' className='px-4 py-2 bg-gradient-to-r from-primary-500 to-primary-700 text-white rounded-lg hover:from-primary-600 hover:to-primary-700 transition cursor-pointer'>Save Changes</button>
                         </div>
                     </form>
                 </div>

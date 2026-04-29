@@ -20,7 +20,8 @@ const groupSchema = new mongoose.Schema({
     cover_photo: {type: String, default: ''},
     location: {type: String, default: ''},
     members: [{ type: String, ref: 'User'}],
-    admins: [{ type: String, ref: 'User'}]
+    admins: [{ type: String, ref: 'User'}],
+    joinRequests: [{ type: String, ref: 'User'}]
 }, {timestamps: true});
 
 const Group = mongoose.model('Group', groupSchema);

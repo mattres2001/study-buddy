@@ -404,6 +404,29 @@ export const getUserProfiles = async (req, res) => {
 }
 
 /*******************************************************************************
+ * Function:    getUsersByIds
+ * Description: Returns minimal profile data (id, name, avatar) for a list of
+ *              user IDs, used to render avatar stacks for RSVPs and participants.
+ * Input:       req (Express Request) - body: { userIds: string[] }
+ *              res (Express Response)
+ * Output:      JSON response with matched user profiles
+ * Return:      { success: boolean, users: Array<{ _id, full_name, profile_picture }> }
+ ******************************************************************************/
+export const getUsersByIds = async (req, res) => {
+    try {
+        const { userIds } = req.body
+        if (!userIds?.length) return res.json({ success: true, users: [] })
+        const users = await User.find(
+            { _id: { $in: userIds } },
+            { _id: 1, full_name: 1, profile_picture: 1, username: 1 }
+        )
+        res.json({ success: true, users })
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message })
+    }
+}
+
+/*******************************************************************************
  * Function:    getRecommendedUsers
  * Description: Scores and ranks non-connected users by shared courses, subjects,
  *              and mutual connections, returning the top 10 recommendations.
@@ -413,6 +436,34 @@ export const getUserProfiles = async (req, res) => {
  * Return:      { success: boolean, recommendations: Array<{ user, score,
  *               sharedCourses, sharedSubjects, mutualConnectionsCount }> }
  ******************************************************************************/
+/*******************************************************************************
+ * Function:    declineConnectionRequest
+ * Description: Declines a pending incoming connection request by deleting the
+ *              Connection document without modifying either user's arrays.
+ * Input:       req (Express Request) - body: { id: string } (requesting user id)
+ *              res (Express Response)
+ * Output:      Connection document removed from the database
+ * Return:      { success: boolean, message: string }
+ ******************************************************************************/
+export const declineConnectionRequest = async (req, res) => {
+    try {
+        const { userId } = req.auth()
+        const { id } = req.body
+
+        const deleted = await Connection.findOneAndDelete({
+            from_user_id: id,
+            to_user_id: userId,
+            status: 'pending'
+        })
+
+        if (!deleted) return res.json({ success: false, message: 'Request not found' })
+
+        res.json({ success: true, message: 'Request declined' })
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message })
+    }
+}
+
 export const getRecommendedUsers = async (req, res) => {
     try {
         const { userId } = req.auth();

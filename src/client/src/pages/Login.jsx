@@ -45,10 +45,10 @@ const Login = () => {
                         </div>
                     </div>
                     <h1 className='text-3xl md:text-6xl md:pb-2 font-bold bg-gradient-to-r 
-                    from-indigo-950 to-indigo-800 bg-clip-text text-transparent'>
+                    from-primary-900 to-primary-600 bg-clip-text text-transparent'>
                         Let's study together!
                     </h1>
-                    <p className='text-x1 md:text-3x1 text-indigo-900 max-w-72 md:max-w-md'>
+                    <p className='text-x1 md:text-3x1 text-primary-900 max-w-72 md:max-w-md'>
                         Connect with other students on Study Buddy
                     </p>
                 </div>

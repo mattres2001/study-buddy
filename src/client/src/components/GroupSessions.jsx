@@ -42,7 +42,7 @@ const GroupSessions = ({ group, sessions, setSessions, isAdmin = true }) => {
                 {isAdmin && (
                     <button
                         onClick={() => setShowModal(true)}
-                        className="cursor-pointer bg-indigo-500 text-white text-sm px-3 py-1 rounded hover:bg-indigo-600 transition"
+                        className="cursor-pointer bg-primary-500 text-white text-sm px-3 py-1 rounded hover:bg-primary-600 transition"
                     >
                         Add Session
                     </button>

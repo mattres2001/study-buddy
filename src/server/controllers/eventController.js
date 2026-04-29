@@ -1,8 +1,30 @@
+/*******************************************************************************
+ * File:        eventController.js
+ * Description: Express controller handling event creation, retrieval, updates,
+ *              RSVP toggling, and deletion for group study events.
+ *
+ * Revision History:
+ * Date         Author      SCR         Description of Change
+ * ----------   ---------   -------     -------------------------
+ *
+ ******************************************************************************/
 import imagekit from '../configs/imagekit.js';
 import Event from '../models/Event.js'
 import fs from 'fs'
 import Group from '../models/Group.js'
 
+/*******************************************************************************
+ * Function:    createEvent
+ * Description: Creates a new event for a group. Validates required fields and
+ *              time ordering, optionally uploads a flyer photo to ImageKit,
+ *              then saves the event document.
+ * Input:       req (Express Request) - body: { title, groupId, started_at,
+ *                  ended_at, location, visibility, description };
+ *                  files: { flyer_photo }
+ *              res (Express Response)
+ * Output:      New Event document saved to the database
+ * Return:      { success: boolean, newEvent: Event, message: string }
+ ******************************************************************************/
 export const createEvent = async (req, res) => {
     try {
         const { userId } = req.auth();
@@ -86,6 +108,16 @@ export const createEvent = async (req, res) => {
     }
 }
 
+/*******************************************************************************
+ * Function:    getEvents
+ * Description: Retrieves upcoming events for a group visible to the requesting
+ *              user. Returns public events and events created by the user that
+ *              have not yet ended, sorted by start time ascending.
+ * Input:       req (Express Request) - params: { groupId }
+ *              res (Express Response)
+ * Output:      JSON response with matching event documents
+ * Return:      { success: boolean, events: Event[] }
+ ******************************************************************************/
 export const getEvents = async (req, res) => {
     try {
         const now = new Date();
@@ -121,6 +153,17 @@ export const getEvents = async (req, res) => {
     }
 }
 
+/*******************************************************************************
+ * Function:    updateEvent
+ * Description: Updates an existing event's fields. Only the event creator or
+ *              a group admin may update. Validates time ordering before saving.
+ * Input:       req (Express Request) - params: { eventId }; body: { title,
+ *                  description, location, started_at, ended_at, visibility,
+ *                  status }
+ *              res (Express Response)
+ * Output:      Updated Event document saved to the database
+ * Return:      { success: boolean, event: Event }
+ ******************************************************************************/
 export const updateEvent = async (req, res) => {
     try {
         const { userId } = req.auth()
@@ -189,6 +232,45 @@ export const updateEvent = async (req, res) => {
     }
 }
 
+/*******************************************************************************
+ * Function:    rsvpEvent
+ * Description: Toggles the authenticated user's RSVP on an event. Adds the
+ *              user if not already in the rsvp list; removes them if present.
+ * Input:       req (Express Request) - params: { eventId }
+ *              res (Express Response)
+ * Output:      Updated Event document with modified rsvp array
+ * Return:      { success: boolean, event: Event, rsvped: boolean }
+ ******************************************************************************/
+export const rsvpEvent = async (req, res) => {
+    try {
+        const { userId } = req.auth()
+        const { eventId } = req.params
+
+        const event = await Event.findById(eventId)
+        if (!event) return res.status(404).json({ success: false, message: 'Event not found' })
+
+        const alreadyRsvped = event.rsvp.includes(userId)
+        if (alreadyRsvped) {
+            event.rsvp = event.rsvp.filter(id => id !== userId)
+        } else {
+            event.rsvp.push(userId)
+        }
+        await event.save()
+
+        res.json({ success: true, event, rsvped: !alreadyRsvped })
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message })
+    }
+}
+
+/*******************************************************************************
+ * Function:    deleteEvent
+ * Description: Permanently deletes an event by ID.
+ * Input:       req (Express Request) - params: { eventId }
+ *              res (Express Response)
+ * Output:      Event document removed from the database
+ * Return:      { success: boolean, message: string }
+ ******************************************************************************/
 export const deleteEvent = async (req, res) => {
     try {
         const { eventId } = req.params

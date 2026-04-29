@@ -9,22 +9,22 @@
  *
  ******************************************************************************/
 import express from 'express'
-import { upload } from '../configs/multer.js'
 import { protect } from '../middleware/auth.js'
-import { 
+import {
     startSession,
     getGroupSessions,
     updateSessionVibe,
     joinSession,
     endSession,
     getUpcomingGroupSessions,
-    updateDescription
-
+    updateDescription,
+    getActiveSessionsByGroup
 } from '../controllers/sessionController.js'
 
 const sessionRouter = express.Router();
 
 sessionRouter.post('/start', protect, startSession)
+sessionRouter.get('/active-by-group', protect, getActiveSessionsByGroup)
 sessionRouter.get('/:groupId', protect, getGroupSessions)
 sessionRouter.get('/:groupId/upcoming', protect, getUpcomingGroupSessions)
 sessionRouter.patch('/:sessionId/vibe', protect, updateSessionVibe)

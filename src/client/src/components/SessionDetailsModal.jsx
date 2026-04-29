@@ -82,7 +82,7 @@ const SessionDetailsModal = ({ session, setSessions, setShowModal, isAdmin }) =>
                     {/* Vibe */}
                     {session.vibe && (
                         <div className="mb-4">
-                            <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm">
+                            <span className="bg-primary-100 text-primary-700 px-3 py-1 rounded-full text-sm">
                                 {session.vibe.emoji || "✨"} {session.vibe.vibe}
                             </span>
                         </div>
