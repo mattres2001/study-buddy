@@ -28,25 +28,23 @@ const connections = {};
  ******************************************************************************/
 export const sseController = (req, res) => {
     const { userId } = req.params;
-    console.log('New client connected : ', userId);
 
-    // Set SSE headers
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
-    res.setHeader('Access-Controll-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.flushHeaders();
 
-    // Add the client's response object to the connections object
     connections[userId] = res;
 
-    // Send an initial event to the client
-    res.write('log: Connected to SSE stream\n\n');
+    // Keep-alive ping every 25 seconds to prevent proxy/browser timeouts
+    const heartbeat = setInterval(() => {
+        res.write(': ping\n\n');
+    }, 25000);
 
-    // Handle client disconnection
     req.on('close', () => {
-        // Remove the client's response object from the connection array
+        clearInterval(heartbeat);
         delete connections[userId];
-        console.log('Client disconnected');
     })
 }
 
@@ -96,12 +94,10 @@ export const sendMessage = async (req, res) => {
 
         res.json({ success: true, message });
 
-        // Send message to to_user_id using SSE
-        const messageWithUserData = await Message.findById(message._id).populate('from_user_id');
-
-        if (connections[to_user_id]) {
-            connections[to_user_id].write(`data: ${JSON.stringify(messageWithUserData)}\n\n`);
-        }
+        // Push SSE to both recipient and sender so both see the message in real time
+        const payload = `data: ${JSON.stringify(message)}\n\n`;
+        if (connections[to_user_id]) connections[to_user_id].write(payload);
+        if (connections[userId])    connections[userId].write(payload);
     } catch (error) {
         console.log(error);
         res.json({ success: false, message: error.message });

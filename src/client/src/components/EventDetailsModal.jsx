@@ -8,8 +8,9 @@
  * ----------   ---------   -------     -------------------------
  *
  ******************************************************************************/
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from '@clerk/clerk-react'
+import { Calendar, MapPin, Eye, X } from 'lucide-react'
 import api from '../api/axios'
 import AvatarStack from './AvatarStack'
 
@@ -29,31 +30,34 @@ const EventDetailsModal = ({ event, setShowModal, isAdmin, setEvents, setSelecte
     if (!event) return null
 
     const { userId, getToken } = useAuth()
-    const isCancelled = event.status === "cancelled"
-    const hasRSVPed = event.rsvp?.includes(userId)
+    const isCancelled = event.status === 'cancelled'
+    const hasRSVPed   = event.rsvp?.includes(userId)
 
-    const [isEditing, setIsEditing] = useState(false)
-    const [rsvpLoading, setRsvpLoading] = useState(false)
+    const [isEditing,    setIsEditing]    = useState(false)
+    const [rsvpLoading,  setRsvpLoading]  = useState(false)
+    const [confirmDelete, setConfirmDelete] = useState(false)
 
     const [editForm, setEditForm] = useState({
-        title: event.title || "",
-        description: event.description || "",
-        location: event.location || "",
-        started_at: event.started_at || "",
-        ended_at: event.ended_at || ""
+        title:       event.title       || '',
+        description: event.description || '',
+        location:    event.location    || '',
+        started_at:  event.started_at  || '',
+        ended_at:    event.ended_at    || '',
     })
 
     useEffect(() => {
         if (event) {
             setEditForm({
-                title: event.title || "",
-                description: event.description || "",
-                location: event.location || "",
-                started_at: event.started_at || "",
-                ended_at: event.ended_at || ""
+                title:       event.title       || '',
+                description: event.description || '',
+                location:    event.location    || '',
+                started_at:  event.started_at  || '',
+                ended_at:    event.ended_at    || '',
             })
         }
     }, [event])
+
+    const set = (key) => (e) => setEditForm(prev => ({ ...prev, [key]: e.target.value }))
 
     const handleRSVP = async () => {
         try {
@@ -66,9 +70,7 @@ const EventDetailsModal = ({ event, setShowModal, isAdmin, setEvents, setSelecte
             )
             if (data.success) {
                 setSelectedEvent?.(data.event)
-                setEvents?.(prev =>
-                    prev.map(ev => ev._id === data.event._id ? data.event : ev)
-                )
+                setEvents?.(prev => prev.map(ev => ev._id === data.event._id ? data.event : ev))
             }
         } catch (err) {
             console.error(err)
@@ -77,326 +79,287 @@ const EventDetailsModal = ({ event, setShowModal, isAdmin, setEvents, setSelecte
         }
     }
 
+    const handleCancelEvent = async () => {
+        try {
+            const token = await getToken()
+            const { data } = await api.patch(
+                `/api/event/${event._id}/update`,
+                { status: 'cancelled' },
+                { headers: { Authorization: `Bearer ${token}` } }
+            )
+            if (data.success) {
+                setEvents(prev => prev.map(ev => ev._id === data.event._id ? data.event : ev))
+                setSelectedEvent(data.event)
+                setIsEditing(false)
+                setShowModal(false)
+            }
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    const handleSave = async () => {
+        try {
+            const token = await getToken()
+            const { data } = await api.patch(
+                `/api/event/${event._id}/update`,
+                editForm,
+                { headers: { Authorization: `Bearer ${token}` } }
+            )
+            if (data.success) {
+                setSelectedEvent(data.event)
+                setEvents(prev => prev.map(ev => ev._id === data.event._id ? data.event : ev))
+                setIsEditing(false)
+            }
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    const handleDelete = async () => {
+        try {
+            const token = await getToken()
+            const { data } = await api.delete(
+                `/api/event/${event._id}`,
+                { headers: { Authorization: `Bearer ${token}` } }
+            )
+            if (data.success) {
+                setEvents(prev => prev.filter(ev => ev._id !== event._id))
+                setSelectedEvent(null)
+                setShowModal(false)
+            }
+        } catch (err) {
+            console.error(err)
+        }
+    }
 
     return (
-        <div className="fixed inset-0 z-50 h-screen overflow-y-auto bg-black/50">
-            <div className="max-w-2xl sm:py-10 mx-auto">
-
-                <div className={`bg-white rounded-lg shadow p-6 transition
-                    ${isCancelled ? " grayscale" : ""}
-                `}>
+        <div className='fixed top-0 bottom-0 left-0 right-0 z-110 h-screen overflow-y-scroll bg-black/50'>
+            <div className='max-w-2xl sm:py-6 mx-auto'>
+                <div className={`bg-white rounded-lg shadow p-6 ${isCancelled ? 'grayscale' : ''}`}>
 
                     {/* Header */}
-                    <div className="flex justify-between items-start mb-6">
-                        {isCancelled && (
-                            <span className="ml-2 text-xs font-bold uppercase bg-red-500 text-white px-2 py-1 rounded-md">
-                                Cancelled
+                    <div className='flex items-start justify-between mb-6'>
+                        <div className='flex-1 pr-4'>
+                            {isCancelled && (
+                                <span className='inline-block mb-2 text-xs font-bold uppercase bg-red-100 text-red-600 px-2 py-0.5 rounded-md'>
+                                    Cancelled
+                                </span>
+                            )}
+                            {isEditing && !isCancelled ? (
+                                <input
+                                    value={editForm.title}
+                                    onChange={set('title')}
+                                    className='w-full text-2xl font-bold text-gray-900 border-b-2 border-primary-300 outline-none pb-1'
+                                />
+                            ) : (
+                                <h1 className='text-2xl font-bold text-gray-900'>{event.title}</h1>
+                            )}
+                            <span className={`inline-flex items-center gap-1 mt-2 text-xs font-medium px-2.5 py-1 rounded-full ${
+                                event.visibility === 'public'
+                                    ? 'bg-green-50 text-green-700'
+                                    : 'bg-gray-100 text-gray-600'
+                            }`}>
+                                <Eye className='w-3 h-3' />
+                                {event.visibility}
                             </span>
-                        )}
-
-                        {isEditing && !isCancelled ? (
-                            <input
-                                value={editForm.title}
-                                onChange={(e) =>
-                                    setEditForm(prev => ({ ...prev, title: e.target.value }))
-                                }
-                                className="w-full text-2xl font-bold border-b border-gray-300 outline-none"
-                            />
-                        ) : (
-                            <h1 className="text-2xl font-bold text-gray-900">
-                                {event.title}
-                            </h1>
-                        )}
-
+                        </div>
                         <button
-                            onClick={() => setShowModal(false)}
-                            className="text-gray-500 hover:text-gray-700"
+                            onClick={() => { setIsEditing(false); setShowModal(false) }}
+                            className='p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition cursor-pointer'
                         >
-                            ✕
+                            <X className='w-5 h-5' />
                         </button>
                     </div>
 
                     {/* Flyer */}
                     {event.flyer_photo && (
-                        <img
-                            src={event.flyer_photo}
-                            alt="event flyer"
-                            className="w-full h-48 object-cover rounded-lg mb-4"
-                        />
+                        <img src={event.flyer_photo} alt='event flyer' className='w-full h-48 object-cover rounded-lg mb-6' />
                     )}
 
-                    {/* Date + Time */}
-                    {isEditing && !isCancelled ? (
-                        <input
-                            type="datetime-local"
-                            value={editForm.started_at?.slice(0, 16)}
-                            onChange={(e) =>
-                                setEditForm(prev => ({
-                                    ...prev,
-                                    started_at: e.target.value
-                                }))
-                            }
-                            className="border border-gray-200 rounded-md p-2"
-                        />
-                    ) : (
-                        <div className="text-sm text-gray-600 mb-3">
-                            📅 {new Date(event.started_at).toLocaleString()}
-                        </div>
-                    )}
-
-                    {/* End Date + Time */}
-                    {isEditing && !isCancelled ? (
-                        <input
-                            type="datetime-local"
-                            value={editForm.ended_at?.slice(0, 16) || ""}
-                            onChange={(e) =>
-                                setEditForm(prev => ({
-                                    ...prev,
-                                    ended_at: e.target.value
-                                }))
-                            }
-                            className="border border-gray-200 rounded-md p-2"
-                        />
-                    ) : (
-                        <div className="text-sm text-gray-600 mb-3">
-                            ⏱️ Ends:{" "}
-                            {event.ended_at
-                                ? new Date(event.ended_at).toLocaleString()
-                                : "Not set"}
-                        </div>
-                    )}
-
-                    {/* Location */}
-                    {isEditing && !isCancelled? (
-                        <input
-                            value={editForm.location}
-                            onChange={(e) =>
-                                setEditForm(prev => ({ ...prev, location: e.target.value }))
-                            }
-                            className="w-full border border-gray-200 rounded-md p-2"
-                        />
-                    ) : (
-                        event.location && (
-                            <div className="text-sm text-gray-600 mb-2">
-                                📍 {event.location}
+                    {/* Info rows */}
+                    <div className='space-y-3 mb-6'>
+                        {isEditing && !isCancelled ? (
+                            <div>
+                                <label className='block text-sm font-medium text-gray-700 mb-1'>Start</label>
+                                <input
+                                    type='datetime-local'
+                                    value={editForm.started_at?.slice(0, 16)}
+                                    onChange={set('started_at')}
+                                    className='w-full p-3 border border-gray-200 rounded-lg text-sm'
+                                />
                             </div>
-                        )
-                    )}
+                        ) : (
+                            <div className='flex items-center gap-3 text-sm text-gray-600'>
+                                <div className='w-8 h-8 rounded-lg bg-primary-50 flex items-center justify-center flex-shrink-0'>
+                                    <Calendar className='w-4 h-4 text-primary-600' />
+                                </div>
+                                <span>{new Date(event.started_at).toLocaleString()}</span>
+                            </div>
+                        )}
 
-                    {/* Visibility */}
-                    <div className="mb-2">
-                        <span className={`text-sm px-3 py-1 rounded-full ${
-                            event.visibility === "public"
-                                ? "bg-green-100 text-green-700"
-                                : "bg-gray-200 text-gray-700"
-                        }`}>
-                            {event.visibility}
-                        </span>
+                        {isEditing && !isCancelled ? (
+                            <div>
+                                <label className='block text-sm font-medium text-gray-700 mb-1'>End</label>
+                                <input
+                                    type='datetime-local'
+                                    value={editForm.ended_at?.slice(0, 16) || ''}
+                                    onChange={set('ended_at')}
+                                    className='w-full p-3 border border-gray-200 rounded-lg text-sm'
+                                />
+                            </div>
+                        ) : event.ended_at ? (
+                            <div className='flex items-center gap-3 text-sm text-gray-500 pl-11'>
+                                Ends {new Date(event.ended_at).toLocaleString()}
+                            </div>
+                        ) : null}
+
+                        {isEditing && !isCancelled ? (
+                            <div>
+                                <label className='block text-sm font-medium text-gray-700 mb-1'>Location</label>
+                                <input
+                                    value={editForm.location}
+                                    onChange={set('location')}
+                                    className='w-full p-3 border border-gray-200 rounded-lg text-sm'
+                                    placeholder='e.g. Powell Library, Room 302'
+                                />
+                            </div>
+                        ) : event.location ? (
+                            <div className='flex items-center gap-3 text-sm text-gray-600'>
+                                <div className='w-8 h-8 rounded-lg bg-primary-50 flex items-center justify-center flex-shrink-0'>
+                                    <MapPin className='w-4 h-4 text-primary-600' />
+                                </div>
+                                <span>{event.location}</span>
+                            </div>
+                        ) : null}
                     </div>
 
+                    {/* Description */}
                     {isEditing && !isCancelled ? (
-                        <textarea
-                            value={editForm.description}
-                            onChange={(e) =>
-                                setEditForm(prev => ({ ...prev, description: e.target.value }))
-                            }
-                            className="w-full border border-gray-200 rounded-md p-2"
-                        />
-                    ) : (
-                        event.description && (
-                            <p className="text-gray-700 mb-4">
-                                {event.description}
-                            </p>
-                        )
-                    )}
+                        <div className='mb-6'>
+                            <label className='block text-sm font-medium text-gray-700 mb-1'>Description</label>
+                            <textarea
+                                rows={3}
+                                value={editForm.description}
+                                onChange={set('description')}
+                                className='w-full p-3 border border-gray-200 rounded-lg text-sm'
+                                placeholder='What is this event about?'
+                            />
+                        </div>
+                    ) : event.description ? (
+                        <div className='mb-6'>
+                            <label className='block text-sm font-medium text-gray-700 mb-1'>About this event</label>
+                            <p className='text-sm text-gray-600 leading-relaxed bg-gray-50 rounded-lg p-3'>{event.description}</p>
+                        </div>
+                    ) : null}
 
-                    {/* RSVP count + avatars */}
-                    <div className="flex items-center gap-3 mb-6">
-                        <AvatarStack userIds={event.rsvp || []} max={6} size="md" />
-                        <span className="text-sm text-gray-500">
-                            {event.rsvp?.length
-                                ? `${event.rsvp.length} going`
-                                : 'No RSVPs yet'}
+                    {/* RSVP row */}
+                    <div className='flex items-center gap-3 mb-6'>
+                        <AvatarStack userIds={event.rsvp || []} max={6} size='md' />
+                        <span className='text-sm text-gray-500'>
+                            {event.rsvp?.length ? `${event.rsvp.length} going` : 'No RSVPs yet'}
                         </span>
                     </div>
 
                     {/* Footer */}
-                    <div className="flex justify-between items-center pt-4 border-t">
-
-                        {isEditing ? (
-                            <div className="flex gap-2 justify-end w-full">
-
+                    {isEditing ? (
+                        <div className='flex justify-between items-center pt-6 border-t border-gray-100'>
+                            <button
+                                onClick={handleCancelEvent}
+                                className='px-4 py-2 border border-red-300 text-red-600 rounded-lg text-sm hover:bg-red-50 transition cursor-pointer'
+                            >
+                                Cancel Event
+                            </button>
+                            <div className='flex gap-3'>
                                 <button
                                     onClick={() => setIsEditing(false)}
-                                    className="px-4 py-2 bg-gray-200 rounded-lg"
+                                    className='px-4 py-2 border border-gray-300 rounded-lg text-gray-700 text-sm hover:bg-gray-50 transition cursor-pointer'
                                 >
-                                    Cancel
+                                    Discard
                                 </button>
-
                                 <button
-                                    onClick={async () => {
-                                        try {
-                                            const token = await getToken()
-
-                                            const { data } = await api.patch(
-                                                `/api/event/${event._id}/update`,
-                                                { status: "cancelled" },
-                                                {
-                                                    headers: {
-                                                        Authorization: `Bearer ${token}`
-                                                    }
-                                                }
-                                            )
-
-                                            if (data.success) {
-                                                // update dashboard list
-                                                setEvents(prev =>
-                                                    prev.map(ev =>
-                                                        ev._id === data.event._id ? data.event : ev
-                                                    )
-                                                )
-
-                                                // update modal state
-                                                setSelectedEvent(data.event)
-
-                                                setIsEditing(false)
-                                                setShowModal(false)
-                                            }
-
-                                        } catch (err) {
-                                            console.error(err)
-                                        }
-                                    }}
-                                    className="px-4 py-2 bg-red-700 text-white rounded-lg hover:bg-red-800"
+                                    onClick={handleSave}
+                                    className='px-4 py-2 bg-gradient-to-r from-primary-500 to-primary-700 text-white rounded-lg text-sm font-medium hover:from-primary-600 hover:to-primary-800 transition cursor-pointer'
                                 >
-                                    Cancel Event
+                                    Save Changes
                                 </button>
-
-                                <button
-                                    onClick={async () => {
-                                        try {
-                                            const token = await getToken()
-
-                                            const { data } = await api.patch(
-                                                `/api/event/${event._id}/update`,
-                                                editForm,
-                                                {
-                                                    headers: {
-                                                        Authorization: `Bearer ${token}`
-                                                    }
-                                                }
-                                            )
-
-                                            if (data.success) {
-                                                setSelectedEvent(data.event)
-
-                                                setEvents(prev =>
-                                                    prev.map(ev =>
-                                                        ev._id === data.event._id ? data.event : ev
-                                                    )
-                                                )
-                                                setIsEditing(false)
-                                            }
-
-                                        } catch (err) {
-                                            console.error(err)
-                                        }
-                                    }}
-                                    className="px-4 py-2 bg-red-500 text-white rounded-lg"
-                                >
-                                    Save
-                                </button>
-
                             </div>
-                        ) : (
-                            <>
-                            {/* LEFT SIDE: ACTION BUTTONS */}
-                            <div className="flex gap-2">
-
-                                {/* EDIT (ADMIN ONLY) */}
+                        </div>
+                    ) : (
+                        <div className='flex justify-between items-center pt-6 border-t border-gray-100'>
+                            {/* Left: admin actions */}
+                            <div className='flex gap-2'>
                                 {isAdmin && !isCancelled && (
                                     <button
                                         onClick={() => setIsEditing(true)}
-                                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                                        className='px-4 py-2 border border-primary-300 text-primary-600 rounded-lg text-sm hover:bg-primary-50 transition cursor-pointer'
                                     >
                                         Edit Event
                                     </button>
                                 )}
-
-                                {isAdmin && (
+                                {isAdmin && !confirmDelete && (
                                     <button
-                                        onClick={async () => {
-                                            const confirmDelete = window.confirm(
-                                                "This will permanently delete this event. Continue?"
-                                            )
-
-                                            if (!confirmDelete) return
-
-                                            try {
-                                                const token = await getToken()
-
-                                                const { data } = await api.delete(
-                                                    `/api/event/${event._id}`,
-                                                    {
-                                                        headers: {
-                                                            Authorization: `Bearer ${token}`
-                                                        }
-                                                    }
-                                                )
-
-                                                if (data.success) {
-                                                    // remove from dashboard list
-                                                    setEvents(prev =>
-                                                        prev.filter(ev => ev._id !== event._id)
-                                                    )
-
-                                                    setSelectedEvent(null)
-                                                    setShowModal(false)
-                                                }
-
-                                            } catch (err) {
-                                                console.error(err)
-                                            }
-                                        }}
-                                        className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-900"
+                                        onClick={() => setConfirmDelete(true)}
+                                        className='px-4 py-2 border border-red-300 text-red-600 rounded-lg text-sm hover:bg-red-50 transition cursor-pointer'
                                     >
-                                        Delete Event
+                                        Delete
                                     </button>
                                 )}
+                                {isAdmin && confirmDelete && (
+                                    <>
+                                        <button
+                                            onClick={() => setConfirmDelete(false)}
+                                            className='px-4 py-2 border border-gray-300 rounded-lg text-gray-700 text-sm hover:bg-gray-50 transition cursor-pointer'
+                                        >
+                                            Go Back
+                                        </button>
+                                        <button
+                                            onClick={handleDelete}
+                                            className='px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium transition cursor-pointer'
+                                        >
+                                            Yes, Delete
+                                        </button>
+                                    </>
+                                )}
+                            </div>
 
-                                {/* RSVP toggle */}
+                            {/* Right: RSVP + close */}
+                            <div className='flex gap-2'>
                                 {!isCancelled && (
                                     <button
                                         onClick={handleRSVP}
                                         disabled={rsvpLoading}
-                                        className={`px-4 py-2 rounded-lg font-medium transition ${
+                                        className={`px-4 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${
                                             rsvpLoading
-                                                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                                                 : hasRSVPed
-                                                    ? "bg-primary-600 text-white hover:bg-primary-700"
-                                                    : "bg-primary-50 text-primary-600 hover:bg-primary-100"
+                                                    ? 'bg-gradient-to-r from-primary-500 to-primary-700 text-white hover:from-primary-600 hover:to-primary-800'
+                                                    : 'border border-primary-300 text-primary-600 hover:bg-primary-50'
                                         }`}
                                     >
-                                        {rsvpLoading ? "..." : hasRSVPed ? "✓ Going" : "RSVP"}
+                                        {rsvpLoading ? '...' : hasRSVPed ? '✓ Going' : 'RSVP'}
                                     </button>
                                 )}
-                                
+                                {!confirmDelete && (
+                                    <button
+                                        onClick={() => setShowModal(false)}
+                                        className='px-4 py-2 border border-gray-300 rounded-lg text-gray-700 text-sm hover:bg-gray-50 transition cursor-pointer'
+                                    >
+                                        Close
+                                    </button>
+                                )}
                             </div>
+                        </div>
+                    )}
 
-                            {/* RIGHT SIDE: CLOSE */}
-                            <button
-                                onClick={() => setShowModal(false)}
-                                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-                            >
-                                Close
-                            </button>
-                            </>
-                        )}
-
-
-
-
-                    </div>
+                    {/* Danger Zone — delete confirm inline */}
+                    {isAdmin && confirmDelete && !isEditing && (
+                        <div className='mt-4 bg-red-50 border border-red-200 rounded-lg p-4'>
+                            <p className='text-sm text-red-700'>
+                                Permanently delete <span className='font-semibold'>{event.title}</span>? This cannot be undone.
+                            </p>
+                        </div>
+                    )}
 
                 </div>
             </div>

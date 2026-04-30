@@ -293,16 +293,17 @@ export const leaveGroup = async (req, res) => {
         const group = await Group.findById(groupId)
         if (!group) return res.status(404).json({ success: false, message: 'Group not found' })
 
-        if (!group.members.includes(userId))
+        if (!group.members.some(id => id.toString() === userId))
             return res.json({ success: false, message: 'You are not a member of this group' })
 
-        const isSoleAdmin = group.admins.includes(userId) && group.admins.length === 1
+        const isSoleAdmin = group.admins.some(id => id.toString() === userId) && group.admins.length === 1
         if (isSoleAdmin && group.members.length > 1)
             return res.json({ success: false, message: 'Assign another admin before leaving' })
 
-        group.members = group.members.filter(id => id !== userId)
-        group.admins  = group.admins.filter(id => id !== userId)
-        await group.save()
+        await Group.updateOne(
+            { _id: groupId },
+            { $pull: { members: userId, admins: userId } }
+        )
 
         await User.updateOne({ _id: userId }, { $pull: { groups: groupId } })
 

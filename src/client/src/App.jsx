@@ -69,7 +69,7 @@ const App = () => {
 
   useEffect(() => {
     pathnameRef.current = pathname
-  }, [pathnameRef])
+  }, [pathname])
 
   useEffect(() => {
     if (user) {
@@ -78,9 +78,16 @@ const App = () => {
       eventSource.onmessage = (event) => {
         const message = JSON.parse(event.data)
 
-        if (pathnameRef.current === ('/messages/' + message.from_user_id._id)) {
+        // from_user_id is a raw string ID (not populated)
+        const senderId    = message.from_user_id
+        const recipientId = message.to_user_id
+        // The other person in this conversation (regardless of direction)
+        const otherUserId = senderId === user.id ? recipientId : senderId
+
+        if (pathnameRef.current === '/messages/' + otherUserId) {
           dispatch(addMessage(message))
-        } else {
+        } else if (senderId !== user.id) {
+          // Only toast for messages you received, not your own echoed back
           toast.custom((t) => (
             <Notification t={t} message={message}/>
           ), { position: 'bottom-right' })

@@ -40,7 +40,8 @@ const messagesSlice = createSlice({
             state.messages = action.payload
         },
         addMessage: (state, action) => {
-            state.messages = [...state.messages, action.payload]
+            const exists = state.messages.some(m => m._id === action.payload._id)
+            if (!exists) state.messages = [...state.messages, action.payload]
         },
         resetMessages: (state) => {
             state.messages = []
