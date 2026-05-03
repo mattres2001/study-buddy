@@ -14,7 +14,7 @@ import sample_profile from './sample_profile.jpg'
 import sponsored_img from './sponsored_img.png'
 import logo from './logo.png'
 import group_users from './group_users.png'
-import { Home, MessageCircle, Search, UserIcon, Users, UserPlus } from 'lucide-react'
+import { Home, MessageCircle, Search, UserIcon, Users, UserPlus, BookOpen, Link } from 'lucide-react'
 
 export const assets = {
     bgImage,
@@ -32,6 +32,8 @@ export const menuItemsData = [
     { to: '/connections', label: 'Connections', Icon: UserPlus },
     { to: '/discover', label: 'Discover', Icon: Search },
     { to: '/profile', label: 'Profile', Icon: UserIcon },
+    { to: '/forum', label: 'Forum', Icon: BookOpen },
+    { to: '/resources', label: 'Resources', Icon: Link },
 ];
 
 export const dummyGroupData = {

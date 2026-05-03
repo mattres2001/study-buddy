@@ -27,11 +27,17 @@ import { useDispatch } from 'react-redux'
 import { fetchUser } from './features/user/userSlice'
 import { fetchConnections } from './features/connections/connectionsSlice'
 import { addMessage } from './features/messages/messagesSlice'
+import { addGroupMessage } from './features/groupMessages/groupMessagesSlice'
 import Notification from './components/Notification'
 import toast from 'react-hot-toast'
 import GroupProfile from './pages/GroupProfile'
+import GroupChatBox from './pages/GroupChatBox'
 import CreateGroup from './pages/CreateGroup'
 import Dashboard from './pages/Dashboard'
+import Forum from './pages/Forum'
+import SubforumPage from './pages/SubforumPage'
+import ForumPostPage from './pages/ForumPostPage'
+import Resources from './pages/Resources'
 
 /*******************************************************************************
  * Function:    App
@@ -78,19 +84,26 @@ const App = () => {
       eventSource.onmessage = (event) => {
         const message = JSON.parse(event.data)
 
-        // from_user_id is a raw string ID (not populated)
-        const senderId    = message.from_user_id
-        const recipientId = message.to_user_id
-        // The other person in this conversation (regardless of direction)
-        const otherUserId = senderId === user.id ? recipientId : senderId
+        if (message.group_id) {
+          // Group chat message
+          if (pathnameRef.current === '/group/' + message.group_id + '/chat') {
+            dispatch(addGroupMessage(message))
+          } else if (message.from_user_id !== user.id) {
+            toast('New group message', { position: 'bottom-right' })
+          }
+        } else {
+          // Direct message — from_user_id is a raw string ID (not populated)
+          const senderId    = message.from_user_id
+          const recipientId = message.to_user_id
+          const otherUserId = senderId === user.id ? recipientId : senderId
 
-        if (pathnameRef.current === '/messages/' + otherUserId) {
-          dispatch(addMessage(message))
-        } else if (senderId !== user.id) {
-          // Only toast for messages you received, not your own echoed back
-          toast.custom((t) => (
-            <Notification t={t} message={message}/>
-          ), { position: 'bottom-right' })
+          if (pathnameRef.current === '/messages/' + otherUserId) {
+            dispatch(addMessage(message))
+          } else if (senderId !== user.id) {
+            toast.custom((t) => (
+              <Notification t={t} message={message}/>
+            ), { position: 'bottom-right' })
+          }
         }
       }
       return () => {
@@ -112,10 +125,15 @@ const App = () => {
           <Route path='profile' element={<Profile/>}/>
           <Route path='profile/:profileId' element={<Profile/>}/>
           <Route path='create-post' element={<CreatePost/>}/>
-          <Route path='group/:groupId' element={<GroupProfile/>}/> 
+          <Route path='group/:groupId' element={<GroupProfile/>}/>
+          <Route path='group/:groupId/chat' element={<GroupChatBox/>}/>
           {/* make sure to have this route */}
           <Route path='post/:postId' element={<Post/>}/>
           <Route path='create-group' element={<CreateGroup/>}/>
+          <Route path='forum' element={<Forum/>}/>
+          <Route path='forum/:subforumId' element={<SubforumPage/>}/>
+          <Route path='forum/post/:postId' element={<ForumPostPage/>}/>
+          <Route path='resources' element={<Resources/>}/>
         </Route>
       </Routes>
     </>

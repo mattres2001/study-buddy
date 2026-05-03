@@ -9,6 +9,7 @@
  *
  ******************************************************************************/
 import React, { useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useAuth } from '@clerk/clerk-react'
 import { useDispatch } from 'react-redux'
 import { Pencil } from 'lucide-react'
@@ -91,7 +92,7 @@ const CreateGroupModal = ({ setShowModal }) => {
     const coverSrc   = form.cover_photo   ? URL.createObjectURL(form.cover_photo)   : assets.sample_cover
     const pictureSrc = form.group_picture ? URL.createObjectURL(form.group_picture) : assets.sample_profile
 
-    return (
+    return createPortal(
         <div className='fixed top-0 bottom-0 left-0 right-0 z-110 h-screen overflow-y-scroll bg-black/50'>
             <div className='max-w-2xl sm:py-6 mx-auto'>
                 <div className='bg-white rounded-lg shadow p-6'>
@@ -168,7 +169,8 @@ const CreateGroupModal = ({ setShowModal }) => {
                     </form>
                 </div>
             </div>
-        </div>
+        </div>,
+        document.body
     )
 }
 

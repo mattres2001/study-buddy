@@ -20,6 +20,8 @@ import postRouter from './routes/postRoutes.js';
 import storyRouter from './routes/storyRoutes.js';
 import messageRouter from './routes/messagesRoutes.js';
 import groupRouter from './routes/groupRoutes.js';
+import groupMessageRouter from './routes/groupMessageRoutes.js';
+import forumRouter from './routes/forumRoutes.js';
 import eventRouter from './routes/eventRoutes.js';
 import sessionRouter from './routes/sessionRoutes.js'
 import dashboardRouter from './routes/dashboardRoutes.js'
@@ -39,6 +41,8 @@ app.use('/api/post', postRouter);
 app.use('/api/story', storyRouter);
 app.use('/api/message', messageRouter);
 app.use('/api/group', groupRouter);
+app.use('/api/group-message', groupMessageRouter);
+app.use('/api/forum', forumRouter);
 app.use('/api/event', eventRouter);
 app.use('/api/session', sessionRouter);
 app.use('/api/dashboard', dashboardRouter);

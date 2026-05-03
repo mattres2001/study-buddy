@@ -17,7 +17,7 @@ import LiveSessionBanner from '../components/LiveSessionBanner'
 import EditGroupModal from '../components/EditGroupModal'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '@clerk/clerk-react'
-import { Pencil } from 'lucide-react'
+import { Pencil, MessageSquare } from 'lucide-react'
 import toast from 'react-hot-toast'
 import api from '../api/axios'
 
@@ -143,6 +143,14 @@ const GroupProfile = () => {
                     <p className="text-gray-600 mt-2">{group.description}</p>
                 </div>
                 <div className="flex gap-2 flex-shrink-0 mt-1">
+                    {isMember && (
+                        <button
+                            onClick={() => navigate(`/group/${groupId}/chat`)}
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-xl shadow-sm transition cursor-pointer"
+                        >
+                            <MessageSquare className="w-4 h-4" /> Group Chat
+                        </button>
+                    )}
                     {isAdmin && (
                         <button
                             onClick={() => setShowEditModal(true)}

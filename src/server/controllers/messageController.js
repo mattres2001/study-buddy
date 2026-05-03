@@ -13,8 +13,8 @@ import fs from 'fs'
 import imagekit from '../configs/imagekit.js'
 import Message from '../models/Message.js'
 
-// Create an empty object to story SS Event connections
-const connections = {};
+// Shared SSE connection map: userId -> Express response object
+export const connections = {};
 
 /*******************************************************************************
  * Function:    sseController
